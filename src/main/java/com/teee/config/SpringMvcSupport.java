@@ -1,6 +1,6 @@
 package com.teee.config;
 
-import com.teee.controller.AuthorizationInterceptor;
+import com.teee.controller.Interceptor.AuthorizationInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

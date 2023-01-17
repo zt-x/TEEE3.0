@@ -1,5 +1,6 @@
 package com.teee.controller.Account;
 
+import com.teee.controller.ProjectCode;
 import com.teee.vo.R;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,6 @@ public class AccountController {
 
     @PostMapping("/register")
     public R register(@RequestParam String uid,@RequestParam String username){
-        return null;
+        return new R(ProjectCode.CODE_EXCEPTION_BUSSINESS, null,"注册成功！");
     }
 }

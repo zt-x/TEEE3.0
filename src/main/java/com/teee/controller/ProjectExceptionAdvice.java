@@ -4,6 +4,7 @@ package com.teee.controller;
 import com.teee.exception.BusinessException;
 import com.teee.exception.SystemException;
 import com.teee.vo.R;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,12 +25,20 @@ public class ProjectExceptionAdvice {
     @ExceptionHandler(BusinessException.class)
     public R doBusinessException(BusinessException exception){
         // 记录日志
-
+        System.out.println("666");
         return new R(exception.getCode(),null, exception.getMessage());
     }
 
+
     @ExceptionHandler(Exception.class)
     public R doException(Exception exception){
-        return new R(Project.CODE_EXCEPTION,exception,"系统繁忙,请稍后重试 ...");
+        return new R(ProjectCode.CODE_EXCEPTION,exception,"系统繁忙,请稍后重试 ...");
     }
+
+    //补充部分
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public R doHRMNSException(HttpRequestMethodNotSupportedException e){
+        return new R(ProjectCode.CODE_EXCEPTION_BUSSINESS,null, "使用了错误的请求形式");
+    }
+
 }

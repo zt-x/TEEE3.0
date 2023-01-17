@@ -1,6 +1,8 @@
 package com.teee.exception;
 
-public class BusinessException extends RuntimeException{
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+
+public class BusinessException extends RuntimeException {
     private Integer code;
 
     public Integer getCode() {
