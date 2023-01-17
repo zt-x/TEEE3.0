@@ -7,7 +7,7 @@ package com.teee.controller;
  *
  * code中包含了【异常返回值：<0】、【常用字符串】
  */
-public class Code {
+public class Project {
     // 返回值
     public static final int CODE_EXCEPTION = -1;
     public static final int CODE_EXCEPTION_SYSTEM = -2;

@@ -18,6 +18,7 @@ public class ProjectExceptionAdvice {
     public R doSystemException(SystemException exception){
         // 记录日志
         return new R(exception.getCode(),null, exception.getMessage());
+
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -29,6 +30,6 @@ public class ProjectExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public R doException(Exception exception){
-        return new R(Code.CODE_EXCEPTION,exception,"系统繁忙,请稍后重试 ...");
+        return new R(Project.CODE_EXCEPTION,exception,"系统繁忙,请稍后重试 ...");
     }
 }

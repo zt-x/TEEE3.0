@@ -1,8 +1,7 @@
 package com.teee.config;
 
-import com.teee.controller.ProjectInterceptor;
+import com.teee.controller.AuthorizationInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -11,11 +10,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SpringMvcSupport implements WebMvcConfigurer {
 
     @Autowired
-    ProjectInterceptor projectInterceptor;
+    AuthorizationInterceptor authorizationInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(projectInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(authorizationInterceptor).addPathPatterns("/authorization/**");
     }
-
 }
