@@ -1,0 +1,14 @@
+Controller结构：
+    Teacher:
+    Student:
+    Public:
+        AccountController:
+            注册(POST || action:Code.ACTION_REGISTER)
+            登录验证(POST || action:Code.ACTION_LOGIN)
+            修改信息(PUT)
+            获取身份信息(GET)
+            删除用户(DELETE)
+        TODOListController:
+            接收todolist的获取请求，转发给TODOListService
+            
+

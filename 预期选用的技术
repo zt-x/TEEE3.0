@@ -1,0 +1,32 @@
+✔ 一、nginx前端服务器
+
+✔ 二、前后分离通过JSON交互数据
+
+三、Controller层使用适配器
+
+✔ 四、Service层很常规
+
+✔ 五、JWT做token验证
+
+六、AOP做请求记录
+
+七、mybatis generator自动生成mapper、model、xml
+
+八、Logback做日志记录
+
+九、自定义javadoc doclet做接口描述文档
+
+十、连接池使用dbcp2
+
+十一、redis缓存
+
+✔ 十二、WebMvcConfigurerAdapter拦截器
+
+十三、LineRunner启动任务加载基础数据
+
+十四、ApplicationListener监听器
+
+✔ 十五、数据库使用mysql
+
+十六、线程池用来执行task定时任务
+✔ 十七、统一异常处理
