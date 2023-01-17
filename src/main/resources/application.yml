@@ -1,0 +1,13 @@
+server:
+  port: 8080
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1000GB
+      max-request-size: 1000GB
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://124.223.187.100:3306/teee_db
+    username: TEEE
+    password: teee123456
