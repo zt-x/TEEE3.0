@@ -27,8 +27,8 @@ public class TeacherCourseController {
     }
 
     @DeleteMapping
-    public Result deleteCourse(@RequestBody JSONObject jo){
-        return courseService.deleteCourse((Integer)jo.get("cid"));
+    public Result delCourse(@RequestBody JSONObject jo){
+        return courseService.delCourse((Integer)jo.get("cid"));
     }
 
     @PutMapping

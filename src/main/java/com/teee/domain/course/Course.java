@@ -12,18 +12,18 @@ import lombok.Data;
 @Data
 public class Course {
     @TableId(type= IdType.AUTO)
-    private Integer cid;
-    private String cname;
-    private Long tid;
-    private String college;
-    private String banner;
-    private String works;
-    private String exams;
-    private String startTime;
-    private String endTime;
-    private Integer status;
+    private Integer cid = -1;
+    private String cname = "default name";
+    private Long tid = -1L;
+    private String college = "";
+    private String banner = "";
+    private String works = "[]";
+    private String exams = "[]";
+    private String startTime = "1000-00-00";
+    private String endTime = "9999-99-99";
+    private Integer status = 1;
 
     @TableLogic
-    private Integer deleted;
+    private Integer deleted = 0;
 
 }

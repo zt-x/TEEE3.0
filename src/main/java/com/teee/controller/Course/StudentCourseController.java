@@ -23,11 +23,11 @@ public class StudentCourseController {
 
     @PostMapping
     public Result addCourse(@RequestHeader("Authorization") String token, @RequestBody JSONObject jo){
-        return courseService.addCourse(token, (Integer) jo.get("cid"));
+        return courseService.addCourse(token, jo);
     }
     @DeleteMapping
     public Result removeCourse(@RequestHeader("Authorization") String token, @RequestBody JSONObject jo){
-        return courseService.removeCourse(token, (Integer) jo.get("cid"));
+        return courseService.removeCourse(token, jo);
     }
     @GetMapping
     public Result getMyCourses(@RequestHeader("Authorization") String token){

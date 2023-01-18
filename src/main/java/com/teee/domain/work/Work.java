@@ -21,7 +21,7 @@ public class Work {
     //@TableField(exist = false)
     //private WorkExamRule rule;
 
-    @TableLogic//逻辑删除
+    @TableLogic
     private Integer deleted;
     @Version
     private Integer version;
