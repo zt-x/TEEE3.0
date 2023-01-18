@@ -1,10 +1,12 @@
 package com.teee.controller.Course;
 
-import com.teee.controller.Project.Annoation.RoleCheck;
-import com.teee.controller.Project.ProjectRole;
-import com.teee.vo.R;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.fastjson2.JSONObject;
+import com.teee.project.Annoation.RoleCheck;
+import com.teee.project.ProjectRole;
+import com.teee.service.CourseService;
+import com.teee.vo.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Xu ZhengTao
@@ -12,14 +14,23 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-@RequestMapping("/course/student")
+@RequestMapping("/courses/student")
 @RoleCheck(role = ProjectRole.STUDENT)
 public class StudentCourseController {
 
-    public R addCourse(String token, int cid){
+    @Autowired
+    CourseService courseService;
 
+    @PostMapping
+    public Result addCourse(@RequestHeader("Authorization") String token, @RequestBody JSONObject jo){
+        return courseService.addCourse(token, (Integer) jo.get("cid"));
     }
-    public R getMyCourses(String token){
-
+    @DeleteMapping
+    public Result removeCourse(@RequestHeader("Authorization") String token, @RequestBody JSONObject jo){
+        return courseService.removeCourse(token, (Integer) jo.get("cid"));
+    }
+    @GetMapping
+    public Result getMyCourses(@RequestHeader("Authorization") String token){
+        return courseService.getCourses(token);
     }
 }

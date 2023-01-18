@@ -12,11 +12,12 @@ import lombok.Data;
 @TableName("work_submit_content")
 public class WorkSubmitContent {
     @TableId(type = IdType.AUTO)
-    private Integer submitId;
+    private Integer sid;
     /** ["","",""]*/
     private String submitContent;
     /** [{qscore:, qreadover:}]**/
     private String readover;
     private Integer finishReadOver;
     private String files;
+
 }

@@ -1,4 +1,4 @@
-package com.teee.controller.Project;
+package com.teee.project;
 /**
  * @author Xu ZhengTao
  * @version 3.0

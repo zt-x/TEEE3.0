@@ -8,10 +8,11 @@ import lombok.Data;
 @TableName("work_submit")
 public class WorkSubmit {
     @TableId(type = IdType.AUTO)
-    private  Integer id;
+    private  Integer sid;
     private Long uid;
+    private Integer wid;
+
     private String uname;
-    private Integer workTableId;
     private Integer finishReadOver;
     private Float score;
     private Integer submitId;
@@ -21,19 +22,6 @@ public class WorkSubmit {
     private Integer version;
 
 
-
-    public WorkSubmit(Long uid, String username, Integer workTableId, Integer finishReadOver, Float score, int ans) {
-        this.uid = uid;
-        this.uname = username;
-        this.workTableId = workTableId;
-        this.finishReadOver = finishReadOver;
-        this.score = score;
-        this.submitId = ans;
-    }
-
-    public WorkSubmit() {
-
-    }
     //public static int getNumOfQue(WorkSubmit sw){
     //    try{
     //        AWorkDao aWorkDao = SpringBeanUtil.getBean(AWorkDao.class);

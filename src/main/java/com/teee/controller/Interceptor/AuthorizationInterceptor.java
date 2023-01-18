@@ -1,10 +1,10 @@
 package com.teee.controller.Interceptor;
 
 import com.alibaba.fastjson2.JSON;
-import com.teee.controller.Project.Annoation.RoleCheck;
-import com.teee.controller.Project.ProjectCode;
+import com.teee.project.Annoation.RoleCheck;
+import com.teee.project.ProjectCode;
 import com.teee.util.Jwt;
-import com.teee.vo.R;
+import com.teee.vo.Result;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -36,11 +36,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             try{
                 role = Jwt.getRole(token);
             }catch (IllegalArgumentException e){
-                response.getWriter().write(JSON.toJSONString(new R(ProjectCode.CODE_EXCEPTION_TOKENILLEGAL, null,"Token异常, 请重新登陆")));
+                response.getWriter().write(JSON.toJSONString(new Result(ProjectCode.CODE_EXCEPTION_TOKENILLEGAL, null,"Token异常, 请重新登陆")));
                 return false;
             }
             if(Jwt.getRole(token) < rc.role().ordinal()){
-                response.getWriter().write(JSON.toJSONString(new R(ProjectCode.CODE_EXCEPTION_BUSSINESS, null,"权限不足")));
+                response.getWriter().write(JSON.toJSONString(new Result(ProjectCode.CODE_EXCEPTION_BUSSINESS, null,"权限不足")));
                 return false;
             }else{
                 return true;

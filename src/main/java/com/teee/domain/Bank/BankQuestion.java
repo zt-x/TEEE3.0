@@ -2,6 +2,7 @@ package com.teee.domain.Bank;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -16,40 +17,14 @@ import lombok.Data;
 @TableName("bank_question")
 public class BankQuestion {
     @TableId(type = IdType.AUTO)
-    private Integer bankId;
-
-    private String bankName;
-    private Integer bankType;
+    private Integer bqid;
+    private String bqname;
+    private Integer bqType;
     private String questions;
     private Long owner;
     private String tags;
     private Integer isPrivate;
-    public BankQuestion(String bankName, Integer bankType, String questions, Long owner, String tags) {
-        this.bankName = bankName;
-        this.bankType = bankType;
-        this.questions = questions;
-        this.owner = owner;
-        this.tags = tags;
-    }
+    @TableLogic
+    private Integer deleted;
 
-    public BankQuestion(String bankName, Integer bankType, String questions, Long owner) {
-        this.bankName = bankName;
-        this.bankType = bankType;
-        this.questions = questions;
-        this.owner = owner;
-    }
-    public BankQuestion(String bankName, Integer bankType,Long owner) {
-        this.bankName = bankName;
-        this.bankType = bankType;
-        this.owner = owner;
-    }
-
-    public BankQuestion(Integer bankId, String bankName, Integer bankType, String questions, Long owner, String tags) {
-        this.bankId = bankId;
-        this.bankName = bankName;
-        this.bankType = bankType;
-        this.questions = questions;
-        this.owner = owner;
-        this.tags = tags;
-    }
 }

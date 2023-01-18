@@ -1,7 +1,7 @@
 package com.teee.service.Impl;
 
 import com.teee.service.AccountService;
-import com.teee.vo.R;
+import com.teee.vo.Result;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,27 +14,27 @@ public class AccountServiceImpl implements AccountService {
     // TODO
 
     @Override
-    public R register(Long uid, String uname) {
+    public Result register(Long uid, String uname) {
         return null;
     }
 
     @Override
-    public R login(Long uid, String pwd) {
+    public Result login(Long uid, String pwd) {
         return null;
     }
 
     @Override
-    public R updateUserInfo(Long uid, String uname, String avatar) {
+    public Result updateUserInfo(Long uid, String uname, String avatar) {
         return null;
     }
 
     @Override
-    public R getUserInfo(Long uid) {
+    public Result getUserInfo(Long uid) {
         return null;
     }
 
     @Override
-    public R delUser(Long uid) {
+    public Result delUser(Long uid) {
         return null;
     }
 }

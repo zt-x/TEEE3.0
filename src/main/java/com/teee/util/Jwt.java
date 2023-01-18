@@ -1,7 +1,7 @@
 package com.teee.util;
 
 
-import com.teee.controller.Project.ProjectRole;
+import com.teee.project.ProjectRole;
 import io.jsonwebtoken.*;
 
 import java.util.Date;

@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @TableName("bank_owner")
 public class BankOwner {
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(type = IdType.AUTO)
     Integer id;
     @TableField("owner_id")
     Long oid;

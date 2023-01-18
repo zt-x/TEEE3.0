@@ -1,6 +1,6 @@
 package com.teee.service;
 
-import com.teee.vo.R;
+import com.teee.vo.Result;
 
 
 /**
@@ -8,9 +8,9 @@ import com.teee.vo.R;
  * @version 3.0
  */
 public interface AccountService {
-    public R register(Long uid, String uname);
-    public R login(Long uid, String pwd);
-    public R updateUserInfo(Long uid, String uname, String avatar);
-    public R getUserInfo(Long uid);
-    public R delUser(Long uid);
+    public Result register(Long uid, String uname);
+    public Result login(Long uid, String pwd);
+    public Result updateUserInfo(Long uid, String uname, String avatar);
+    public Result getUserInfo(Long uid);
+    public Result delUser(Long uid);
 }

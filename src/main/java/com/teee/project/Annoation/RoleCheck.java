@@ -1,6 +1,6 @@
-package com.teee.controller.Project.Annoation;
+package com.teee.project.Annoation;
 
-import com.teee.controller.Project.ProjectRole;
+import com.teee.project.ProjectRole;
 
 import java.lang.annotation.*;
 

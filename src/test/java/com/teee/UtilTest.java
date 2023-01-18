@@ -1,6 +1,6 @@
 package com.teee;
 
-import com.teee.controller.Project.ProjectRole;
+import com.teee.project.ProjectRole;
 import com.teee.util.Jwt;
 import org.junit.jupiter.api.Test;
 

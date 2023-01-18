@@ -8,23 +8,23 @@ package com.teee.vo;
  * data为携带数据
  * msg为消息
  */
-public class R {
+public class Result {
     private int code;
     private Object data;
     private String msg;
 
-    public R(int code, Object data, String msg) {
+    public Result(int code, Object data, String msg) {
         this.code = code;
         this.data = data;
         this.msg = msg;
     }
 
-    public R(int code, Object data) {
+    public Result(int code, Object data) {
         this.code = code;
         this.data = data;
     }
 
-    public R(int code, String msg){
+    public Result(int code, String msg){
         this.code = code;
         this.msg = msg;
     }
