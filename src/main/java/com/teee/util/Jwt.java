@@ -1,7 +1,9 @@
 package com.teee.util;
 
 
+import com.teee.controller.Project.ProjectRole;
 import io.jsonwebtoken.*;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -18,7 +20,7 @@ import java.util.UUID;
 public class Jwt {
     private static String signature = "Xu ZhengTao";
     private static long time = 1000*60*60*24;
-    public static String jwtEncrypt(long uid, String role){
+    public static String jwtEncrypt(long uid, ProjectRole role){
         JwtBuilder jwtBuilder = Jwts.builder();
         String jwtToken = jwtBuilder
                 // header
@@ -26,7 +28,7 @@ public class Jwt {
                 .setHeaderParam("alg", "HS256")
                 // payload
                 .claim("uid", uid)
-                .claim("role", role)
+                .claim("role", role.ordinal())
                 .setExpiration(new Date(System.currentTimeMillis() + time))
                 .setId(UUID.randomUUID().toString())
                 //Signature
@@ -43,8 +45,8 @@ public class Jwt {
     public static Long getUid(String token){
         return Long.valueOf(String.valueOf(parse(token).get("uid")));
     }
-    public static String getRole(String token){
-        return String.valueOf(parse(token).get("role"));
+    public static int getRole(String token){
+        return Integer.parseInt(String.valueOf(parse(token).get("role")));
     }
 }
 

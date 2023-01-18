@@ -1,4 +1,4 @@
-package com.teee.controller;
+package com.teee.controller.Project;
 
 
 import com.teee.exception.BusinessException;
@@ -19,19 +19,18 @@ public class ProjectExceptionAdvice {
     public R doSystemException(SystemException exception){
         // 记录日志
         return new R(exception.getCode(),null, exception.getMessage());
-
     }
 
     @ExceptionHandler(BusinessException.class)
     public R doBusinessException(BusinessException exception){
         // 记录日志
-        System.out.println("666");
         return new R(exception.getCode(),null, exception.getMessage());
     }
 
 
     @ExceptionHandler(Exception.class)
     public R doException(Exception exception){
+        exception.printStackTrace();
         return new R(ProjectCode.CODE_EXCEPTION,exception,"系统繁忙,请稍后重试 ...");
     }
 
