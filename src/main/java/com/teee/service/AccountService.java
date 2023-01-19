@@ -1,6 +1,8 @@
 package com.teee.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.teee.vo.Result;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 /**
@@ -8,9 +10,9 @@ import com.teee.vo.Result;
  * @version 3.0
  */
 public interface AccountService {
-    Result register(Long uid, String uname);
-    Result login(Long uid, String pwd);
-    Result updateUserInfo(Long uid, String uname, String avatar);
-    Result getUserInfo(Long uid);
-    Result delUser(Long uid);
+    Result register(JSONObject jo);
+    Result login(JSONObject jo);
+    Result updateUserInfo(JSONObject jo);
+    Result getUserInfo(JSONObject jo);
+    Result delUser(JSONObject jo);
 }

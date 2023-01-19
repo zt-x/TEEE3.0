@@ -1,7 +1,6 @@
 package com.teee.service.Impl;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.util.JSONObject1O;
+import com.alibaba.fastjson.JSONObject;
 import com.teee.domain.course.Course;
 import com.teee.exception.BusinessException;
 import com.teee.project.ProjectCode;

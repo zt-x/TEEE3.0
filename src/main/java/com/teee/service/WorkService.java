@@ -1,10 +1,15 @@
 package com.teee.service;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.teee.domain.work.Work;
+import com.teee.domain.work.WorkExamRule;
 import com.teee.vo.Result;
-import org.springframework.web.bind.annotation.RequestBody;
+import javax.servlet.http.HttpServletResponse;
 
+/**
+ * @author Xu ZhengTao
+ * @version 3.0
+ */
 public interface WorkService {
 
     /**
@@ -22,6 +27,14 @@ public interface WorkService {
      * @return data:"questions:[{}{}{}{}]"
      * */
     Result getWorkContent(JSONObject jo);
+
+    /**
+     * 获取作业计时器
+     * @authorization student
+     * @param token: tokne
+     * @param jo: {"wid":xx}
+     **/
+    Result getWorkTimer(String token, JSONObject jo);
 
     /**
      * 提交作业
@@ -58,5 +71,48 @@ public interface WorkService {
      * @param work:Work
      * */
     Result editWorkInfo(Work work);
+
+    /**
+     * 获取当前作业的所有提交物
+     * @authorization teacher
+     * @param jo:{"wid":xx}
+     * @return
+     * data<JSONArray>:[
+     *      {submitId:, usernmae, uid:, finish_readover: , score: }
+     *  ]
+     * */
+    Result getWorkSubmits(JSONObject jo);
+
+    /**
+     * 获取当前课程的所有作业的提交情况
+     * @authorization teacher
+     * @param jo:{"cid":xx}
+     * */
+    Result getCourseWorkFinishSituation(JSONObject jo);
+
+    /**
+     * 设置作业规则
+     * @authorization teacher
+     * @param workExamRule WorkExamRule
+     * */
+    Result setRules(WorkExamRule workExamRule);
+    Result getExamRulePre(Integer wid);
+    Result getExamRuleEnter(Integer wid);
+
+    /**
+     * 打包下载作业附件
+     * @authorization teacher
+     * @param jo: {"wid"}
+     * @return code
+     * */
+    Result downloadFiles(JSONObject jo, HttpServletResponse response);
+
+    /**
+     * 批改分数
+     * @authorization teacher
+     * @param jo: {int sid, String score}
+     * @return code=1/-1, msg=""
+     * */
+    Result setSubmitScore(JSONObject jo);
 
 }

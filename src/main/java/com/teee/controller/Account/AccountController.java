@@ -1,5 +1,6 @@
 package com.teee.controller.Account;
 
+import com.alibaba.fastjson.JSONObject;
 import com.teee.project.Annoation.RoleCheck;
 import com.teee.project.ProjectRole;
 import com.teee.service.AccountService;
@@ -16,31 +17,35 @@ public class AccountController {
 
 
     @PostMapping("/register")
-    public Result register(@RequestParam Long uid, @RequestParam String uname){
-        return accountService.register(uid, uname);
+    @RoleCheck(role = ProjectRole.TEACHER)
+    public Result register(@RequestBody JSONObject jo){
+        return accountService.register(jo);
     }
 
     @PostMapping("/login")
-    public Result login(@RequestParam Long uid, @RequestParam String pwd){
-        return accountService.login(uid, pwd);
+    public Result login(@RequestBody JSONObject jo){
+        return accountService.login(jo);
     }
 
     @GetMapping
     @RoleCheck(role = ProjectRole.STUDENT)
-    public Result getUserInfo(@RequestParam Long uid){
-        return accountService.getUserInfo(uid);
+    /** jo:{uid: uid} */
+    public Result getUserInfo(@RequestBody JSONObject jo){
+        return accountService.getUserInfo(jo);
     }
 
     @PutMapping
     @RoleCheck(role = ProjectRole.STUDENT)
-    public Result updateUserInfo(@RequestParam Long uid, @RequestParam String uname, @RequestParam String avatar){
-        return accountService.updateUserInfo(uid, uname, avatar);
+    /** jo:{uid, avatar} */
+    public Result updateUserInfo(@RequestBody JSONObject jo){
+        return accountService.updateUserInfo(jo);
     }
 
     @DeleteMapping
-    @RoleCheck(role = ProjectRole.STUDENT)
-    public Result delUser(@RequestParam Long uid){
-        return accountService.delUser(uid);
+    @RoleCheck(role = ProjectRole.TEACHER)
+    /** jo:{uid: uid} */
+    public Result delUser(@RequestBody JSONObject jo){
+        return accountService.delUser(jo);
     }
 
 }

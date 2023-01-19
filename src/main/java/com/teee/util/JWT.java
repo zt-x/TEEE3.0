@@ -17,10 +17,10 @@ import java.util.UUID;
  *      getRole(String token)
  * */
 
-public class Jwt {
+public class JWT {
     private static String signature = "Xu ZhengTao";
     private static long time = 1000*60*60*24;
-    public static String jwtEncrypt(long uid, ProjectRole role){
+    public static String jwtEncrypt(long uid, int role){
         JwtBuilder jwtBuilder = Jwts.builder();
         String jwtToken = jwtBuilder
                 // header
@@ -28,7 +28,7 @@ public class Jwt {
                 .setHeaderParam("alg", "HS256")
                 // payload
                 .claim("uid", uid)
-                .claim("role", role.ordinal())
+                .claim("role", role)
                 .setExpiration(new Date(System.currentTimeMillis() + time))
                 .setId(UUID.randomUUID().toString())
                 //Signature
