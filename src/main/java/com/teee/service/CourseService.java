@@ -19,5 +19,4 @@ public interface CourseService {
 
     Result addCourse(String token, JSONObject jo);
     Result removeCourse(String token, JSONObject jo);
-
 }

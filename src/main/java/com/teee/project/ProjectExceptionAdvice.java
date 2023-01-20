@@ -48,6 +48,7 @@ public class ProjectExceptionAdvice {
 
     @ExceptionHandler(DuplicateKeyException.class)
     public Result doSQLException(DuplicateKeyException e){
+        e.printStackTrace();
         return new Result(ProjectCode.CODE_EXCEPTION_BUSSINESS,null, "该数据已经被添加过啦!");
     }
 

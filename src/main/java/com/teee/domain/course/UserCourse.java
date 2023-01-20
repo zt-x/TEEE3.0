@@ -1,4 +1,4 @@
-package com.teee.domain.user;
+package com.teee.domain.course;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;

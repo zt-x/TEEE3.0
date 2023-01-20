@@ -1,5 +1,7 @@
 package com.teee.vo;
 
+import lombok.NoArgsConstructor;
+
 /**
  * @author Xu ZhengTao
  * @version 3.0
@@ -8,6 +10,7 @@ package com.teee.vo;
  * data为携带数据
  * msg为消息
  */
+@NoArgsConstructor
 public class Result {
     private int code;
     private Object data;

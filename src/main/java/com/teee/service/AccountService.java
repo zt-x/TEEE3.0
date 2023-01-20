@@ -14,5 +14,6 @@ public interface AccountService {
     Result login(JSONObject jo);
     Result updateUserInfo(JSONObject jo);
     Result getUserInfo(JSONObject jo);
+    Result getBaseUserInfo(String token);
     Result delUser(JSONObject jo);
 }

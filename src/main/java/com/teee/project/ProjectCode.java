@@ -9,10 +9,15 @@ package com.teee.project;
  */
 public class ProjectCode {
     // 返回值
+    public static final int CODE_SUCCESS_NoCourse = 101;
     public static final int CODE_SUCCESS = 1;
     public static final int CODE_EXCEPTION = -1;
     public static final int CODE_EXCEPTION_SYSTEM = -2;
     public static final int CODE_EXCEPTION_BUSSINESS = -3;
     public static final int CODE_EXCEPTION_TOKENILLEGAL = -4;
+
+
+    //String
+    public static final String STRING_IMG_PURE_BROWN = "/img/pure_brown.png";
 
 }

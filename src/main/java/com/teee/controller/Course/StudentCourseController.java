@@ -29,8 +29,5 @@ public class StudentCourseController {
     public Result removeCourse(@RequestHeader("Authorization") String token, @RequestBody JSONObject jo){
         return courseService.removeCourse(token, jo);
     }
-    @GetMapping
-    public Result getMyCourses(@RequestHeader("Authorization") String token){
-        return courseService.getCourses(token);
-    }
+
 }

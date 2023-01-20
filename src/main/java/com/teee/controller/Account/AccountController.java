@@ -34,6 +34,12 @@ public class AccountController {
         return accountService.getUserInfo(jo);
     }
 
+    @GetMapping("/routes")
+    @RoleCheck(role = ProjectRole.STUDENT)
+    public Result getRoutes(@RequestHeader("Authorization") String token){
+        return accountService.getBaseUserInfo(token);
+    }
+
     @PutMapping
     @RoleCheck(role = ProjectRole.STUDENT)
     /** jo:{uid, avatar} */

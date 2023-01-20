@@ -12,8 +12,6 @@ public class UserLogin {
     Long uid;
     String pwd;
     Integer role;
-    @TableLogic
-    Integer deleted;
     public UserLogin(Long uid, String pwd, Integer role) {
         this.uid = uid;
         this.pwd = pwd;
