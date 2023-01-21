@@ -11,8 +11,7 @@ import com.teee.vo.Result;
  */
 public interface CourseService {
     // TODO
-    Result getCourses(String token);
-
+    Result getCourses(String token, int page);
     Result createCourse(String token, Course course);
     Result delCourse(int cid);
     Result editCourse(Course course);

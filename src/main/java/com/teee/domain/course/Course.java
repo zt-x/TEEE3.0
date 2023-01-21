@@ -18,8 +18,8 @@ public class Course {
     private String banner = "";
     private String works = "[]";
     private String exams = "[]";
-    private String startTime = "1000-00-00";
-    private String endTime = "9999-99-99";
+    private String startTime = "1000-01-01";
+    private String endTime = "9999-12-31";
     private Integer status = 1;
 
     @TableLogic
