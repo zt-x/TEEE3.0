@@ -26,6 +26,8 @@ public class AutoReadOver {
     @Autowired
     WorkSubmitDao workSubmitDao;
 
+
+    //TODO 异步执行， 后续可能考虑使用RabbitMQ
     @Async
     public WorkSubmit autoReadOver(WorkSubmit workSubmit, boolean readChoice, boolean readFillIn) {
         log.info("进入AutoReadOver");
@@ -141,11 +143,9 @@ public class AutoReadOver {
             }
         }else{
             log.info("结束AutoReadOver");
-
             log.info("WorkCointent 为 null");
         }
         log.info("结束AutoReadOver");
-
         return sw;
     }
 }

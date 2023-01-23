@@ -7,7 +7,7 @@ import com.teee.dao.*;
 import com.teee.domain.bank.BankWork;
 import com.teee.domain.user.UserInfo;
 import com.teee.domain.work.*;
-import com.teee.exception.BusinessException;
+import com.teee.vo.exception.BusinessException;
 import com.teee.project.ProjectCode;
 import com.teee.service.CourseService;
 import com.teee.service.WorkService;

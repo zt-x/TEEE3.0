@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.teee.dao.WorkSubmitDao;
 import com.teee.domain.work.WorkSubmit;
-import com.teee.exception.BusinessException;
+import com.teee.vo.exception.BusinessException;
 import com.teee.project.ProjectCode;
 import com.teee.service.SubmitService;
 import com.teee.util.JWT;

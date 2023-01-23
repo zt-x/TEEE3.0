@@ -1,8 +1,6 @@
 package com.teee.util;
 
-import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
-import com.teee.exception.BusinessException;
+import com.teee.vo.exception.BusinessException;
 import com.teee.project.ProjectCode;
 
 public class MyAssert {

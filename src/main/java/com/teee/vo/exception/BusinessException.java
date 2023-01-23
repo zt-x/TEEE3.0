@@ -1,4 +1,4 @@
-package com.teee.exception;
+package com.teee.vo.exception;
 
 public class BusinessException extends RuntimeException {
     private Integer code;

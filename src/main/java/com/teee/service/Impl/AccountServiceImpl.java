@@ -1,14 +1,11 @@
 package com.teee.service.Impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import com.teee.dao.UserInfoDao;
 import com.teee.dao.UserLoginDao;
 import com.teee.domain.user.UserInfo;
 import com.teee.domain.user.UserLogin;
-import com.teee.exception.BusinessException;
+import com.teee.vo.exception.BusinessException;
 import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.service.AccountService;
@@ -19,7 +16,6 @@ import com.teee.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

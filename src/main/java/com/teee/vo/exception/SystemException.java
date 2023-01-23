@@ -1,4 +1,4 @@
-package com.teee.exception;
+package com.teee.vo.exception;
 
 public class SystemException extends RuntimeException{
     private Integer code;

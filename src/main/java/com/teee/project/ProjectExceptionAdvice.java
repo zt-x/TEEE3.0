@@ -1,16 +1,14 @@
 package com.teee.project;
 
 
-import com.teee.exception.BusinessException;
-import com.teee.exception.SystemException;
+import com.teee.vo.exception.BusinessException;
+import com.teee.vo.exception.SystemException;
 import com.teee.vo.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * @author Xu ZhengTao

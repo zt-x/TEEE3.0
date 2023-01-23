@@ -10,7 +10,7 @@ import com.teee.domain.course.Course;
 import com.teee.domain.course.CourseUser;
 import com.teee.domain.course.UserCourse;
 import com.teee.domain.work.Work;
-import com.teee.exception.BusinessException;
+import com.teee.vo.exception.BusinessException;
 import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.service.CourseService;
