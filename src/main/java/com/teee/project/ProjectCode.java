@@ -20,4 +20,8 @@ public class ProjectCode {
     //String
     public static final String STRING_IMG_PURE_BROWN = "/img/pure_brown.png";
 
+    //题型
+    public static final Integer QueType_choice_question = 30010;
+    public static final Integer QueType_fillin_question = 30011;
+    public static final Integer QueType_text_question = 30012;
 }

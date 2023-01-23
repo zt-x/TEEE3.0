@@ -10,12 +10,19 @@ import com.teee.vo.Result;
  * @version 3.0
  */
 public interface CourseService {
-    // TODO
     Result getCourses(String token, int page);
+    Result getCourseInfo(int cid);
     Result createCourse(String token, Course course);
     Result delCourse(int cid);
     Result editCourse(Course course);
 
     Result addCourse(String token, JSONObject jo);
-    Result removeCourse(String token, JSONObject jo);
+    Result removeUserFromCourse(Long uid, JSONObject jo);
+
+
+    // TODO
+    Result getUsers(int cid);
+    Result getWorks(int cid);
+    Result getAnnouncements(int cid);
+
 }

@@ -106,14 +106,15 @@ public class AccountServiceImpl implements AccountService {
         }else if(ProjectRole.TEACHER.ordinal() == role){
             routers.add(rf.getRouterObject("Home | 主页", "/home", "home_teacher.vue", "mdi-home", true));
             routers.add(rf.getRouterObject("Course | 我的课程", "/course", "courseView.vue", "mdi-book", true));
-            routers.add(rf.getRouterObject("统计数据", "/Statistics", "StatisticsView.vue", "fas fa-bar-chart", true));
             routers.add(rf.getRouterObject("CourseContent", "/CourseContent", "courseContent.vue", "", false));
+            routers.add(rf.getRouterObject("WorkContent", "/WorkContent", "Course/AWorkContent.vue", "", false));
+            routers.add(rf.getRouterObject("作业库/题库管理", "/BankManager", "BankManagerView.vue", "fa fa-university", true));
+
         }else if(ProjectRole.STUDENT.ordinal() == role){
             routers.add(rf.getRouterObject("Home | 主页", "/home", "home_student.vue", "mdi-home", true));
             routers.add(rf.getRouterObject("Course | 我的课程", "/course", "courseView.vue", "mdi-book", true));
-            routers.add(rf.getRouterObject("CourseContent", "/CourseContent", "CourseContent.vue", "", false));
-            routers.add(rf.getRouterObject("WorkContent", "/WorkContent", "Course/AWorkContent.vue", "", false));
-            routers.add(rf.getRouterObject("作业库/题库管理", "/BankManager", "BankManagerView.vue", "fa fa-university", true));
+            routers.add(rf.getRouterObject("CourseContent", "/CourseContent", "courseContent.vue", "", false));
+            // TODO
         }
         return routers;
     }

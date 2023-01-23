@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teee.project.Annoation.RoleCheck;
 import com.teee.project.ProjectRole;
 import com.teee.service.CourseService;
+import com.teee.util.JWT;
 import com.teee.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,6 @@ public class StudentCourseController {
     }
     @DeleteMapping
     public Result removeCourse(@RequestHeader("Authorization") String token, @RequestBody JSONObject jo){
-        return courseService.removeCourse(token, jo);
+        return courseService.removeUserFromCourse(JWT.getUid(token), jo);
     }
-
 }

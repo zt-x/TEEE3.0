@@ -1,5 +1,6 @@
 package com.teee.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teee.domain.work.Work;
 import com.teee.domain.work.WorkExamRule;
@@ -12,29 +13,21 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface WorkService {
 
-    /**
-     * 获取当前课程下的所有作业
-     * @authorization student/teacher
-     * @param jo: {"cid":xx}
-     * @return data:[Work1{}, Work2{}....]
-     * */
-    Result getCourseWorks(JSONObject jo);
 
     /**
      * 获取作业内容
      * @authorization student
-     * @param jo: {"wid":xx}
      * @return data:"questions:[{}{}{}{}]"
      * */
-    Result getWorkContent(JSONObject jo);
+    Result getWorkContent(int id);
 
     /**
      * 获取作业计时器
      * @authorization student
-     * @param token: tokne
+     * @param token: token
      * @param jo: {"wid":xx}
      **/
-    Result getWorkTimer(String token, JSONObject jo);
+    Result getWorkTimer(String token, int wid);
 
     /**
      * 提交作业
@@ -42,7 +35,7 @@ public interface WorkService {
      * @param jo: {"token"(String):xx, "wid":xx, "ans"(String):"xx", "files"(String):"xxx"}
      * @return {code="", msg=""}
      * */
-    Result submitWork(JSONObject jo);
+    Result submitWork(String token, JSONObject jo);
 
     /**
      * 布置作业
@@ -114,5 +107,5 @@ public interface WorkService {
      * @return code=1/-1, msg=""
      * */
     Result setSubmitScore(JSONObject jo);
-
+    Result getWorkFinishStatus(String token, int cid);
 }

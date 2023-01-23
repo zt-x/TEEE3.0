@@ -31,6 +31,12 @@ public class TeacherCourseController {
         return courseService.delCourse((Integer)jo.get("cid"));
     }
 
+    @DeleteMapping("/delUser")
+    public Result delUserFromCourse(@RequestBody JSONObject jo){
+        // TODO 这里写的不好看
+        return courseService.removeUserFromCourse(jo.getLong("uid"), jo);
+    }
+
     @PutMapping
     public Result editCourse( @RequestBody Course course){
         return courseService.editCourse(course);

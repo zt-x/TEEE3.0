@@ -5,19 +5,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.teee.dao.CourseDao;
-import com.teee.dao.CourseUserDao;
-import com.teee.dao.UserCourseDao;
-import com.teee.dao.UserInfoDao;
+import com.teee.dao.*;
 import com.teee.domain.course.Course;
 import com.teee.domain.course.CourseUser;
 import com.teee.domain.course.UserCourse;
+import com.teee.domain.work.Work;
 import com.teee.exception.BusinessException;
 import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.service.CourseService;
 import com.teee.util.JWT;
 import com.teee.util.MyAssert;
+import com.teee.util.TypeChange;
 import com.teee.util.validator;
 import com.teee.vo.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +42,9 @@ public class CourseServiceImpl implements CourseService {
     UserInfoDao userInfoDao;
     @Autowired
     CourseUserDao courseUserDao;
+    @Autowired
+    WorkDao workDao;
+
 
     @Override
     public Result createCourse(String token, Course course) {
@@ -144,14 +146,25 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Result removeCourse(String token, JSONObject jo) {
+    public Result getUsers(int cid) {
+        //TODO 需要完成 学生提交作业 功能后
+        return null;
+    }
+
+    @Override
+    public Result removeUserFromCourse(Long uid, JSONObject jo) {
         int cid = (Integer) jo.get("cid");
+        // TODO 需要完成 学生提交作业 功能后
+
+        // 从Course_user表移除
+
+        // 删除该生提交作业的记录
+
         return null;
     }
 
     @Override
     public Result getCourses(String token, int page) {
-        log.info("page = " + page);
         // 分权限
         int role = JWT.getRole(token);
         if(role == ProjectRole.ADMIN.ordinal()){
@@ -181,15 +194,18 @@ public class CourseServiceImpl implements CourseService {
                     return new Result(ProjectCode.CODE_SUCCESS_NoCourse, null, "您还没有选课~");
                 }
                 String[] cids = userCourse.getCid().replace("[", "").replace("]", "").split(",");
-                // TODO 需要测试
+                // TODO 需要测试·
                 for (int i = (page-1)*9; i<(Math.min(page * 9, cids.length)); i++) {
                     cids[i] = cids[i].replaceAll(" ", "");
                     course = courseDao.selectById(Integer.valueOf(cids[i]));
+                    if(course == null){
+                        continue;
+                    }
                     packageCourse(courses, course);
                 }
                 JSONObject ret = new JSONObject();
                 ret.put("current", page);
-                ret.put("pages", cids.length/9);
+                ret.put("pages", cids.length/9+1);
                 ret.put("courses", courses);
                 return new Result(ProjectCode.CODE_SUCCESS, ret, "suc");
             }catch(NullPointerException npe){
@@ -199,6 +215,37 @@ public class CourseServiceImpl implements CourseService {
         }else{
             throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS,"😣获取身份失败 ... ");
         }
+    }
+
+    @Override
+    public Result getCourseInfo(int cid) {
+        Course course = courseDao.selectOne(new LambdaQueryWrapper<Course>().eq(Course::getCid, cid));
+        MyAssert.notNull(course, "您查询的课程不存在哦！👀");
+        JSONObject o = (JSONObject) JSONObject.toJSON(course);
+        o.put("tname", userInfoDao.selectById(o.getLong("tid")).getUname());
+        o.put("UserCount", TypeChange.str2arrl(courseUserDao.selectById(cid).getUid()).size());
+        o.put("WorksCount", TypeChange.str2arrl(course.getWorks()).size());
+        o.put("ExamsCount", TypeChange.str2arrl(course.getExams()).size());
+        return new Result(ProjectCode.CODE_SUCCESS, o.toJSONString(), "获取课程信息成功！");
+    }
+
+    @Override
+    public Result getWorks(int cid) {
+        LambdaQueryWrapper<Work> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(Work::getCid, cid);
+        List<Work> works = workDao.selectList(lqw);
+        JSONArray jsonArray = new JSONArray();
+        // 装配
+        for (Work work : works) {
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(work);
+            jsonArray.add(jsonObject);
+        }
+        return new Result(ProjectCode.CODE_SUCCESS, jsonArray, "获取成功");
+    }
+
+    @Override
+    public Result getAnnouncements(int cid) {
+        return null;
     }
 
     private void packageCourse(JSONArray courses, Course course) {

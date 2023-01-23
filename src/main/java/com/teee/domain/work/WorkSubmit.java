@@ -1,7 +1,13 @@
 package com.teee.domain.work;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.annotation.*;
+import com.teee.dao.BankWorkDao;
+import com.teee.dao.WorkDao;
+import com.teee.domain.bank.BankWork;
+import com.teee.util.SpringBeanUtil;
+import com.teee.util.TypeChange;
 import lombok.Data;
 
 @Data
@@ -15,46 +21,46 @@ public class WorkSubmit {
     private String uname;
     private Integer finishReadOver;
     private Float score;
-    private Integer submitId;
     @TableLogic//逻辑删除
     private Integer deleted;
     @Version
     private Integer version;
 
 
-    //public static int getNumOfQue(WorkSubmit sw){
-    //    try{
-    //        AWorkDao aWorkDao = SpringBeanUtil.getBean(AWorkDao.class);
-    //        BankWorkDao bankWorkDao = SpringBeanUtil.getBean(BankWorkDao.class);
-    //        Integer workTableId = sw.getWorkTableId();
-    //        AWork aWork = aWorkDao.selectById(workTableId);
-    //        BankWork bankWork = bankWorkDao.selectById(aWork.getWorkId());
-    //        String questions = bankWork.getQuestions();
-    //        JSONArray jsonArray = TypeChange.str2Jarr(questions);
-    //        return jsonArray.size();
-    //    }catch (Exception e){
-    //        e.printStackTrace();
-    //        return -1;
-    //    }
-    //}
-    //public static JSONArray getWorkCotent(WorkSubmit sw){
-    //    try{
-    //        AWorkDao aWorkDao = SpringBeanUtil.getBean(AWorkDao.class);
-    //        BankWorkDao bankWorkDao = SpringBeanUtil.getBean(BankWorkDao.class);
-    //        Integer workTableId = sw.getWorkTableId();
-    //        AWork aWork = aWorkDao.selectById(workTableId);
-    //        BankWork bankWork = bankWorkDao.selectById(aWork.getWorkId());
-    //        String questions = bankWork.getQuestions();
-    //        JSONArray jsonArray = TypeChange.str2Jarr(questions);
-    //        return jsonArray;
-    //    }catch (Exception e){
-    //        e.printStackTrace();
-    //        return null;
-    //    }
-    //}
+
+    public static int getNumOfQue(WorkSubmit sw){
+        try{
+            WorkDao workDao = SpringBeanUtil.getBean(WorkDao.class);
+            BankWorkDao bankWorkDao = SpringBeanUtil.getBean(BankWorkDao.class);
+            Integer wid = sw.getWid();
+            Work work = workDao.selectById(wid);
+            BankWork bankWork = bankWorkDao.selectById(work.getBwid());
+            String questions = bankWork.getQuestions();
+            JSONArray jsonArray = TypeChange.str2Jarr(questions);
+            return jsonArray.size();
+        }catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    public static JSONArray getWorkCotent(WorkSubmit sw){
+        try{
+            WorkDao workDao = SpringBeanUtil.getBean(WorkDao.class);
+            BankWorkDao bankWorkDao = SpringBeanUtil.getBean(BankWorkDao.class);
+            Integer wid = sw.getWid();
+            Work work = workDao.selectById(wid);
+            BankWork bankWork = bankWorkDao.selectById(work.getBwid());
+            String questions = bankWork.getQuestions();
+            JSONArray jsonArray = TypeChange.str2Jarr(questions);
+            return jsonArray;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
     //public static JSONArray getWorkCotentByWBID(Integer wbid){
     //    try{
-    //        AWorkDao aWorkDao = SpringBeanUtil.getBean(AWorkDao.class);
+    //        WorkDao workDao = SpringBeanUtil.getBean(WorkDao.class);
     //        BankWorkDao bankWorkDao = SpringBeanUtil.getBean(BankWorkDao.class);
     //        BankWork bankWork = bankWorkDao.selectById(wbid);
     //        String questions = bankWork.getQuestions();
