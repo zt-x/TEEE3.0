@@ -1,4 +1,4 @@
-package com.teee.util;
+package com.teee.utils;
 
 import com.alibaba.fastjson.JSONObject;
 

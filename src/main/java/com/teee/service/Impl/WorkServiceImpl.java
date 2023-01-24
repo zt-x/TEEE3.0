@@ -5,25 +5,38 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.teee.dao.*;
 import com.teee.domain.bank.BankWork;
+import com.teee.domain.course.Course;
 import com.teee.domain.user.UserInfo;
 import com.teee.domain.work.*;
-import com.teee.vo.exception.BusinessException;
 import com.teee.project.ProjectCode;
 import com.teee.service.CourseService;
 import com.teee.service.WorkService;
-import com.teee.util.JWT;
-import com.teee.util.MyAssert;
+import com.teee.utils.JWT;
+import com.teee.utils.MyAssert;
 import com.teee.vo.Result;
+import com.teee.vo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
+/**
+ * @author Xu ZhengTao
+ * @version 3.0
+ */
 @Service
 public class WorkServiceImpl implements WorkService {
 
-    // TODO
+
     @Autowired
     CourseService courseService;
     @Autowired
@@ -38,7 +51,8 @@ public class WorkServiceImpl implements WorkService {
     WorkSubmitContentDao workSubmitContentDao;
     @Autowired
     UserInfoDao userInfoDao;
-
+    @Autowired
+    CourseDao courseDao;
     AutoReadOver autoReadOver;
 
 
@@ -46,15 +60,15 @@ public class WorkServiceImpl implements WorkService {
     @Override
     public Result getWorkContent(int id) {
 
-        Work aWork = workDao.selectById(id);
-        MyAssert.notNull(aWork,"作业不存在😮");
+        Work work = workDao.selectById(id);
+        MyAssert.notNull(work,"作业不存在😮");
+        BankWork bankWork = bankWorkDao.selectById(work.getBwid());
+        MyAssert.notNull(bankWork, "作业内容不存在😮");
         try{
-            BankWork bankWork = bankWorkDao.selectById(aWork.getBwid());
-            MyAssert.notNull(bankWork, "作业内容不存在😮");
             String bakQue = bankWork.getQuestions().replaceAll(",\\\\\\\"cans\\\\\\\":\\\\\\\".+\\\\\"", "");
             return new Result(ProjectCode.CODE_SUCCESS,bakQue,"获取成功");
         }catch (Exception e){
-            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "获取作业内容时异常", e);
+            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "解析题库时异常", e);
         }
     }
     @Override
@@ -64,16 +78,14 @@ public class WorkServiceImpl implements WorkService {
             Long uid = JWT.getUid(token);
             WorkTimer workTimer = workTimerDao.selectOne(new LambdaQueryWrapper<WorkTimer>().eq(WorkTimer::getUid, uid).eq(WorkTimer::getWid, wid));
             if(workTimer == null){
-                /************
-                 第一次进入
-                 ************/
+                /* 第一次进入**/
                 workTimer = new WorkTimer();
                 workTimer.setUid(uid);
                 workTimer.setWid(wid);
-                Work aWork = workDao.selectOne(new LambdaQueryWrapper<Work>().eq(Work::getId, wid));
-                MyAssert.notNull(aWork, "创建Timer时错误：无法找到作业");
+                Work work = workDao.selectOne(new LambdaQueryWrapper<Work>().eq(Work::getId, wid));
+                MyAssert.notNull(work, "创建Timer时错误：无法找到作业");
                 try{
-                    Float timeLimit = aWork.getTimeLimit();
+                    Float timeLimit = work.getTimeLimit();
                     workTimer.setRestTime(String.valueOf(timeLimit*60.0));
                 }catch (NullPointerException npe){
                     workTimer.setRestTime("无限制");
@@ -125,13 +137,32 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public Result releaseWork(Work work) {
-        return null;
+    public Result releaseWork(String token, Work work) {
+        System.out.println(work);
+        Course course = courseDao.selectById(work.getCid());
+        MyAssert.notNull(course,"课程号不存在！");
+        // TODO 验证数据合法性
+        // 写入AWorkDao数据库
+        try{
+            if ("".equals(work.getDeadline())) {
+                work.setDeadline("9999-12-30");
+            }
+            workDao.insert(work);
+            return new Result(ProjectCode.CODE_SUCCESS, work.getId(), "发布成功!");
+        }catch(Exception e){
+            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "发布作业时发生异常, 已记录数据", e);
+        }
     }
+
+
+    // TODO
 
     @Override
     public Result delWork(JSONObject jo) {
-        return null;
+        Work work = workDao.selectOne(new LambdaQueryWrapper<Work>().eq(Work::getId,jo.get("wid")));
+        MyAssert.notNull(work, "这条作业已经不存在啦!");
+        int i = workDao.deleteById(work.getId());
+        return new Result(ProjectCode.CODE_SUCCESS, "删除成功!");
     }
 
     @Override
@@ -154,28 +185,41 @@ public class WorkServiceImpl implements WorkService {
         return null;
     }
 
-    @Override
-    public Result setRules(WorkExamRule workExamRule) {
-        return null;
-    }
 
     @Override
-    public Result getExamRulePre(Integer wid) {
-        return null;
-    }
+    public Result downloadFiles(Integer wid, HttpServletResponse response) {
+        File file = courseService.packageFile(wid);
+        if(file == null || !file.exists()){
+            throw new BusinessException("在打包的时候出了一点点问题...");
+        }else{
+            String workName = workDao.selectById(wid).getWname();
 
-    @Override
-    public Result getExamRuleEnter(Integer wid) {
-        return null;
-    }
-
-    @Override
-    public Result downloadFiles(JSONObject jo, HttpServletResponse response) {
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy年MM月dd日'_'HH'时'mm'分'");
+            Date date = new Date(System.currentTimeMillis());
+            System.out.println();
+            response.reset();
+            response.setContentType("application/octet-stream");
+            response.setCharacterEncoding("utf-8");
+            response.setContentLength((int)file.length());
+            try {
+                response.setHeader("Content-Disposition", URLEncoder.encode("附件打包_" + workName + "_" +formatter.format(date) + ".zip", "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            try {
+                byte[] bytes = FileCopyUtils.copyToByteArray(file);
+                OutputStream os = response.getOutputStream();
+                os.write(bytes);
+            } catch (IOException e) {
+                throw new BusinessException("下载启动失败");
+            }
+        }
         return null;
     }
 
     @Override
     public Result setSubmitScore(JSONObject jo) {
+        // TODO 批改作业
         return null;
     }
 

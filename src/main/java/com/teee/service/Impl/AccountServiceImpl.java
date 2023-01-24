@@ -5,14 +5,14 @@ import com.teee.dao.UserInfoDao;
 import com.teee.dao.UserLoginDao;
 import com.teee.domain.user.UserInfo;
 import com.teee.domain.user.UserLogin;
-import com.teee.vo.exception.BusinessException;
 import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.service.AccountService;
-import com.teee.util.JWT;
-import com.teee.util.MyAssert;
-import com.teee.util.RouteFactory;
+import com.teee.utils.JWT;
+import com.teee.utils.MyAssert;
+import com.teee.utils.RouteFactory;
 import com.teee.vo.Result;
+import com.teee.vo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -27,7 +27,6 @@ import java.util.ArrayList;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    // TODO
     @Autowired
     UserLoginDao userLoginDao;
 
@@ -110,7 +109,7 @@ public class AccountServiceImpl implements AccountService {
             routers.add(rf.getRouterObject("Home | 主页", "/home", "home_student.vue", "mdi-home", true));
             routers.add(rf.getRouterObject("Course | 我的课程", "/course", "courseView.vue", "mdi-book", true));
             routers.add(rf.getRouterObject("CourseContent", "/CourseContent", "courseContent.vue", "", false));
-            // TODO
+            // TODO 添加路由
         }
         return routers;
     }

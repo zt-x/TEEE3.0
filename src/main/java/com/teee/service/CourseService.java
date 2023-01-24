@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.teee.domain.course.Course;
 import com.teee.vo.Result;
 
+import java.io.File;
+
 /**
  * @author Xu ZhengTao
  * @version 3.0
@@ -20,9 +22,8 @@ public interface CourseService {
     Result removeUserFromCourse(Long uid, JSONObject jo);
 
 
-    // TODO
     Result getUsers(int cid);
     Result getWorks(int cid);
     Result getAnnouncements(int cid);
-
+    File packageFile(int wid);
 }

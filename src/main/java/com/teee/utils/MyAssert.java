@@ -1,7 +1,7 @@
-package com.teee.util;
+package com.teee.utils;
 
-import com.teee.vo.exception.BusinessException;
 import com.teee.project.ProjectCode;
+import com.teee.vo.exception.BusinessException;
 
 public class MyAssert {
     public static void isTrue(boolean expression, String message, Object... params) {

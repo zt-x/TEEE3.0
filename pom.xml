@@ -19,6 +19,12 @@
     </properties>
 
     <dependencies>
+        <!--腾讯第三方接口-->
+        <dependency>
+            <groupId>com.tencentcloudapi</groupId>
+            <artifactId>tencentcloud-sdk-java</artifactId>
+            <version>3.1.322</version>
+        </dependency>
         <!--FastJSON2的兼容包-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -61,6 +67,12 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

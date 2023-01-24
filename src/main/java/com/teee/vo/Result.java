@@ -1,5 +1,6 @@
 package com.teee.vo;
 
+import com.teee.project.ProjectCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -12,12 +13,17 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class Result {
-    private int code;
+    private int code = ProjectCode.CODE_SUCCESS;
     private Object data;
     private String msg;
 
     public Result(int code, Object data, String msg) {
         this.code = code;
+        this.data = data;
+        this.msg = msg;
+    }
+
+    public Result(Object data, String msg) {
         this.data = data;
         this.msg = msg;
     }
@@ -29,6 +35,15 @@ public class Result {
 
     public Result(int code, String msg){
         this.code = code;
+        this.msg = msg;
+    }
+
+    public Result(Object data) {
+        this.data = data;
+        this.msg = "success";
+    }
+
+    public Result(String msg) {
         this.msg = msg;
     }
 

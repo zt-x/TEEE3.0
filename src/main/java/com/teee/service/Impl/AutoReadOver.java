@@ -8,7 +8,7 @@ import com.teee.dao.WorkSubmitDao;
 import com.teee.domain.work.WorkSubmit;
 import com.teee.domain.work.WorkSubmitContent;
 import com.teee.project.ProjectCode;
-import com.teee.util.TypeChange;
+import com.teee.utils.TypeChange;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;

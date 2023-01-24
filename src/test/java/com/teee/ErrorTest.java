@@ -1,6 +1,6 @@
 package com.teee;
 
-import com.teee.util.MyAssert;
+import com.teee.utils.MyAssert;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

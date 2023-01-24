@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "path.pic.works",
+      "type": "java.lang.String",
+      "description": "Description for path.pic.works."
+  }
+] }

@@ -1,4 +1,4 @@
-package com.teee.util;
+package com.teee.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

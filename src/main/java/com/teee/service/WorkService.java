@@ -1,10 +1,9 @@
 package com.teee.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teee.domain.work.Work;
-import com.teee.domain.work.WorkExamRule;
 import com.teee.vo.Result;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -18,14 +17,14 @@ public interface WorkService {
      * 获取作业内容
      * @authorization student
      * @return data:"questions:[{}{}{}{}]"
-     * */
+     */
     Result getWorkContent(int id);
 
     /**
      * 获取作业计时器
      * @authorization student
      * @param token: token
-     * @param jo: {"wid":xx}
+     * @param wid {"wid":xx}
      **/
     Result getWorkTimer(String token, int wid);
 
@@ -42,7 +41,7 @@ public interface WorkService {
      * @authorization teacher
      * @param work: Work
      * */
-    Result releaseWork(Work work);
+    Result releaseWork(String token, Work work);
 
     /**
      * 删除作业
@@ -83,22 +82,14 @@ public interface WorkService {
      * */
     Result getCourseWorkFinishSituation(JSONObject jo);
 
-    /**
-     * 设置作业规则
-     * @authorization teacher
-     * @param workExamRule WorkExamRule
-     * */
-    Result setRules(WorkExamRule workExamRule);
-    Result getExamRulePre(Integer wid);
-    Result getExamRuleEnter(Integer wid);
 
     /**
      * 打包下载作业附件
      * @authorization teacher
-     * @param jo: {"wid"}
+     * @param wid
      * @return code
      * */
-    Result downloadFiles(JSONObject jo, HttpServletResponse response);
+    Result downloadFiles(Integer wid, HttpServletResponse response);
 
     /**
      * 批改分数

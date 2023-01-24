@@ -1,9 +1,9 @@
 package com.teee.project;
 
 
+import com.teee.vo.Result;
 import com.teee.vo.exception.BusinessException;
 import com.teee.vo.exception.SystemException;
-import com.teee.vo.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;

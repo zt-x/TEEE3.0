@@ -8,6 +8,10 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * @author Xu ZhengTao
+ * @version 3.0
+ */
 @Configuration
 public class SpringMvcSupport implements WebMvcConfigurer {
 

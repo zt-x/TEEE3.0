@@ -10,19 +10,23 @@ import com.teee.domain.course.Course;
 import com.teee.domain.course.CourseUser;
 import com.teee.domain.course.UserCourse;
 import com.teee.domain.work.Work;
-import com.teee.vo.exception.BusinessException;
+import com.teee.domain.work.WorkSubmit;
+import com.teee.domain.work.WorkSubmitContent;
 import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.service.CourseService;
-import com.teee.util.JWT;
-import com.teee.util.MyAssert;
-import com.teee.util.TypeChange;
-import com.teee.util.validator;
+import com.teee.utils.*;
 import com.teee.vo.Result;
+import com.teee.vo.exception.BusinessException;
+import com.teee.vo.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +48,16 @@ public class CourseServiceImpl implements CourseService {
     CourseUserDao courseUserDao;
     @Autowired
     WorkDao workDao;
+    @Autowired
+    WorkSubmitDao workSubmitDao;
+    @Autowired
+    WorkSubmitContentDao workSubmitContentDao;
 
+    @Value("${path.file.files}")
+    private String filePath;
+
+    @Value("${path.file.temps}")
+    private String tempPath;
 
     @Override
     public Result createCourse(String token, Course course) {
@@ -194,7 +207,6 @@ public class CourseServiceImpl implements CourseService {
                     return new Result(ProjectCode.CODE_SUCCESS_NoCourse, null, "您还没有选课~");
                 }
                 String[] cids = userCourse.getCid().replace("[", "").replace("]", "").split(",");
-                // TODO 需要测试·
                 for (int i = (page-1)*9; i<(Math.min(page * 9, cids.length)); i++) {
                     cids[i] = cids[i].replaceAll(" ", "");
                     course = courseDao.selectById(Integer.valueOf(cids[i]));
@@ -268,34 +280,54 @@ public class CourseServiceImpl implements CourseService {
             return false;
         }
     }
-    //public boolean addCourseToUser(Long uid, int cid) {
-    //    int flag = 0;
-    //    try{
-    //        UserCourse userCourse =  userCourseDao.selectById(uid);
-    //        if(userCourse == null){
-    //            userCourse = new UserCourse(uid, "[]");
-    //            flag = 1;
-    //        }
-    //        ArrayList<Integer> cids = new ArrayList<>();
-    //        String[] split = userCourse.getCid().replace("[", "").replace("]", "").split(",");
-    //        if(!split[0].equals("")){
-    //            for (String s : split) {
-    //                cids.add(Integer.valueOf(s.trim()));
-    //            }
-    //        }
-    //        if(!cids.contains(cid)){
-    //            cids.add(cid);
-    //        }
-    //        userCourse.setCid(cids.toString());
-    //        if(flag == 1){
-    //            userCourseDao.insert(userCourse);
-    //        }else{
-    //            userCourseDao.updateById(userCourse);
-    //        }
-    //        return true;
-    //    }catch (Exception e){
-    //        return false;
-    //    }
-    //
-    //}
+
+    @Override
+    public File packageFile(int wid) {
+        String tmpFilePath = tempPath+File.separator + "downloadZipTemp" + File.separator + wid;
+        File tmpdir = new File(tmpFilePath);
+        if(tmpdir.isDirectory()){
+            log.info("wid文件夹存在, 删除");
+            fileUtil.delFile(tmpdir);
+        }else{
+
+        }
+        List<WorkSubmit> submitWorks = workSubmitDao.selectList(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, wid));
+        for (WorkSubmit sw : submitWorks) {
+            log.info("获取work");
+            Integer submitId = sw.getSid();
+            WorkSubmitContent swc = workSubmitContentDao.selectById(submitId);
+            String files = swc.getFiles();
+            ArrayList<String> file_list = TypeChange.str2arrl(files);
+            for (int i = 1; i <= file_list.size(); i++) {
+                // 第 i 题
+                log.info("  获取第" + i + "题");
+                ArrayList<String> ans_file = TypeChange.str2arrl(file_list.get(i-1), ",");
+                // 第 i1 个附件
+                for (int i1 = 0; i1 < ans_file.size(); i1++) {
+                    log.info("    获取第" + i1+1 + "个文件");
+                    String fileName = ans_file.get(i1);
+                    File src = new File(filePath+File.separator + fileName);
+                    String substring = fileName.substring(fileName.lastIndexOf("_")+1);
+                    String fileOriginName = substring.substring(substring.lastIndexOf("_")+1);
+                    File dst = new File( tmpFilePath +File.separator + sw.getUid()+"_" + sw.getUname() +"_第"+i+"题_" + fileOriginName);
+                    if(!dst.getParentFile().isDirectory()){
+                        dst.getParentFile().mkdirs();
+                    }
+                    try {
+                        FileCopyUtils.copy(src,dst);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        log.error("存在损坏的文件" + e.getMessage());
+                    }
+                }
+            }
+        }
+        try {
+            return fileUtil.fileToZip(tmpFilePath, tempPath+File.separator + "downloadZipTemp" + File.separator,wid+".zip");
+        } catch (IOException e) {
+            log.error("打包时出现异常 ...");
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

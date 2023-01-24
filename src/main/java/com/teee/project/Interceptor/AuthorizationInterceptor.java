@@ -3,7 +3,7 @@ package com.teee.project.Interceptor;
 import com.alibaba.fastjson.JSON;
 import com.teee.project.Annoation.RoleCheck;
 import com.teee.project.ProjectCode;
-import com.teee.util.JWT;
+import com.teee.utils.JWT;
 import com.teee.vo.Result;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
