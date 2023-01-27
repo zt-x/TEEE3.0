@@ -109,7 +109,7 @@ public class AccountServiceImpl implements AccountService {
             routers.add(rf.getRouterObject("Home | 主页", "/home", "home_student.vue", "mdi-home", true));
             routers.add(rf.getRouterObject("Course | 我的课程", "/course", "courseView.vue", "mdi-book", true));
             routers.add(rf.getRouterObject("CourseContent", "/CourseContent", "courseContent.vue", "", false));
-            // TODO 添加路由
+            // TODO 0 添加路由
         }
         return routers;
     }

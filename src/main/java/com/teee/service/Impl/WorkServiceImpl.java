@@ -53,6 +53,7 @@ public class WorkServiceImpl implements WorkService {
     UserInfoDao userInfoDao;
     @Autowired
     CourseDao courseDao;
+    @Autowired
     AutoReadOver autoReadOver;
 
 
@@ -137,7 +138,7 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public Result releaseWork(String token, Work work) {
+    public Result releaseWork(Work work) {
         System.out.println(work);
         Course course = courseDao.selectById(work.getCid());
         MyAssert.notNull(course,"课程号不存在！");
@@ -155,8 +156,6 @@ public class WorkServiceImpl implements WorkService {
     }
 
 
-    // TODO
-
     @Override
     public Result delWork(JSONObject jo) {
         Work work = workDao.selectOne(new LambdaQueryWrapper<Work>().eq(Work::getId,jo.get("wid")));
@@ -164,6 +163,7 @@ public class WorkServiceImpl implements WorkService {
         int i = workDao.deleteById(work.getId());
         return new Result(ProjectCode.CODE_SUCCESS, "删除成功!");
     }
+    // TODO 1
 
     @Override
     public Result getWorkInfo(JSONObject jo) {
@@ -175,10 +175,15 @@ public class WorkServiceImpl implements WorkService {
         return null;
     }
 
+
+    // TODO 3
+
     @Override
     public Result getWorkSubmits(JSONObject jo) {
         return null;
     }
+
+    // TODO 2
 
     @Override
     public Result getCourseWorkFinishSituation(JSONObject jo) {
@@ -238,7 +243,7 @@ public class WorkServiceImpl implements WorkService {
             JSONObject jo2 = new JSONObject();
             Integer id = (Integer) jo1.get("id");
             jo2.put("wid", id);
-            WorkSubmit submitWork = workSubmitDao.selectOne(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getSid, id).eq(WorkSubmit::getUid, uid));
+            WorkSubmit submitWork = workSubmitDao.selectOne(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, id).eq(WorkSubmit::getUid, uid));
             if(submitWork == null){
                 // 未提交
                 jo2.put("status", -1);

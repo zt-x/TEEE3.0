@@ -22,8 +22,8 @@ public class TeacherWorkController {
     ExamService examService;
 
     @PostMapping
-    public Result release(@RequestHeader("Authorization") String token,@RequestBody Work work){
-       return workService.releaseWork(token, work);
+    public Result release(@RequestBody Work work){
+       return workService.releaseWork(work);
     }
 
     @PostMapping("/setRules")

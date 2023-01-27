@@ -41,7 +41,7 @@ public interface WorkService {
      * @authorization teacher
      * @param work: Work
      * */
-    Result releaseWork(String token, Work work);
+    Result releaseWork(Work work);
 
     /**
      * 删除作业

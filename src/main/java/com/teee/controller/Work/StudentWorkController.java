@@ -35,7 +35,7 @@ public class StudentWorkController {
      * @params int wid, String ans, String files
      * */
     @PostMapping
-    Result submitWork(@RequestHeader("Authorization") String token, JSONObject jo){
+    Result submitWork(@RequestHeader("Authorization") String token,@RequestBody JSONObject jo){
         return workService.submitWork(token, jo);
     }
 

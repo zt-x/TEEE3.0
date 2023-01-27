@@ -20,11 +20,6 @@ public class SubmitServiceImpl implements SubmitService {
 
 
     @Override
-    public Result SubmitWork(String token, int wid, String ans, String files) {
-        return null;
-    }
-
-    @Override
     public Result getAllSubmitByWorkId(int wid) {
         return null;
     }

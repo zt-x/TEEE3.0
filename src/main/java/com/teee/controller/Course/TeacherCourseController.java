@@ -33,7 +33,7 @@ public class TeacherCourseController {
 
     @DeleteMapping("/delUser")
     public Result delUserFromCourse(@RequestBody JSONObject jo){
-        // TODO 这里写的不好看
+        // TODO 0 这里写的不好看
         return courseService.removeUserFromCourse(jo.getLong("uid"), jo);
     }
 

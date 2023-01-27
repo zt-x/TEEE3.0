@@ -9,6 +9,7 @@ import com.teee.dao.*;
 import com.teee.domain.course.Course;
 import com.teee.domain.course.CourseUser;
 import com.teee.domain.course.UserCourse;
+import com.teee.domain.user.UserInfo;
 import com.teee.domain.work.Work;
 import com.teee.domain.work.WorkSubmit;
 import com.teee.domain.work.WorkSubmitContent;
@@ -18,7 +19,6 @@ import com.teee.service.CourseService;
 import com.teee.utils.*;
 import com.teee.vo.Result;
 import com.teee.vo.exception.BusinessException;
-import com.teee.vo.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,7 +98,7 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-    private Integer addStuToCourse(int cid, Long uid) {
+    private void addStuToCourse(int cid, Long uid) {
         int new_ = 0;
         try{
             CourseUser courseUser = courseUserDao.selectById(cid);
@@ -122,12 +122,11 @@ public class CourseServiceImpl implements CourseService {
             }else{
                 courseUserDao.updateById(courseUser);
             }
-            return ProjectCode.CODE_SUCCESS;
         }catch (Exception e){
             throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "添加课程给用户时出错", e);
         }
     }
-    private Integer addCourseToUser(Long uid, int cid) {
+    private void addCourseToUser(Long uid, int cid) {
         int new_ = 0;
         try{
             UserCourse userCourse =  userCourseDao.selectById(uid);
@@ -137,7 +136,7 @@ public class CourseServiceImpl implements CourseService {
             }
             ArrayList<Integer> cids = new ArrayList<>();
             String[] split = userCourse.getCid().replace("[", "").replace("]", "").split(",");
-            if(!split[0].equals("")){
+            if(!"".equals(split[0])){
                 for (String s : split) {
                     cids.add(Integer.valueOf(s.trim()));
                 }
@@ -151,7 +150,6 @@ public class CourseServiceImpl implements CourseService {
             }else{
                 userCourseDao.updateById(userCourse);
             }
-            return ProjectCode.CODE_SUCCESS;
         }catch (Exception e){
             throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "为课程添加用户时出错", e);
         }
@@ -160,20 +158,85 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Result getUsers(int cid) {
-        //TODO 需要完成 学生提交作业 功能后
-        return null;
+        List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
+        List<Integer> wids = new ArrayList<>();
+        for (Work work : works) {
+            wids.add(work.getId());
+        }
+        String uids = courseUserDao.selectById(cid).getUid();
+        if(uids != null){
+            ArrayList<String> arrayList = TypeChange.str2arrl(uids);
+            JSONArray jarr = new JSONArray();
+            // 遍历学生
+            for (String s : arrayList) {
+                UserInfo userInfo = userInfoDao.selectById(Long.valueOf(s));
+                JSONObject ret = new JSONObject();
+                if(userInfo == null){
+                    userInfo = new UserInfo();
+                }
+                ret.put("uid", userInfo.getUid());
+                ret.put("username", userInfo.getUname());
+                ret.put("avatar", userInfo.getAvatar());
+                List<WorkSubmit> workSubmits = workSubmitDao.selectList(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getUid, userInfo.getUid()));
+                float avarage = 0;
+                int fwn = 0;
+                for (WorkSubmit workSubmit : workSubmits) {
+                    if(wids.contains(workSubmit.getWid())){
+                        avarage += workSubmit.getScore();
+                        fwn++;
+                    }
+                }
+                avarage = avarage/ (workSubmits.size() == 0?1:workSubmits.size());
+                ret.put("workAverageScore", avarage);
+                ret.put("finishWorkNum", fwn);
+
+                jarr.add(ret);
+            }
+            return new Result(ProjectCode.CODE_SUCCESS, TypeChange.jarr2str(jarr), "获取用户成功");
+        }else{
+            log.warn("异常的查询：查询课程用户时，courseUser表中未记录该课程");
+            return new Result(ProjectCode.CODE_SUCCESS, "[]", "您的班级还没有学生加入哦~");
+        }
     }
 
     @Override
     public Result removeUserFromCourse(Long uid, JSONObject jo) {
         int cid = (Integer) jo.get("cid");
-        // TODO 需要完成 学生提交作业 功能后
-
+        // TODO 3 需要完成 学生提交作业 功能后
         // 从Course_user表移除
+        CourseUser courseUser = courseUserDao.selectById(cid);
+        MyAssert.notNull(courseUser, "该学生已不在这个班级啦！");
+        ArrayList<Long> uids = new ArrayList<>();
+        String[] split = courseUser.getUid().replace("[", "").replace("]", "").split(",");
+        if(!split[0].equals("")){
+            for (String s : split) {
+                if(!s.equals(uid.toString())){
+                    uids.add(Long.valueOf(s.trim()));
+                }
+            }
+        }
+        courseUser.setUid(uids.toString());
+        // 从UserCourse表删除
+        UserCourse userCourse = userCourseDao.selectById(uid);
+        MyAssert.notNull(userCourse, "未在学生表中找到该学生，可能还未选课 ...");
+        ArrayList<Integer> cids = new ArrayList<>();
+        split = userCourse.getCid().replace("[", "").replace("]", "").split(",");
+        if(!"".equals(split[0])){
+            for (String s : split) {
+                if(!s.equals(String.valueOf(cid))){
+                    cids.add(Integer.valueOf(s.trim()));
+                }
+            }
+        }
 
         // 删除该生提交作业的记录
-
-        return null;
+        LambdaQueryWrapper<WorkSubmit> eq = new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getUid, uid);
+        List<WorkSubmit> workSubmits = workSubmitDao.selectList(eq);
+        for (WorkSubmit workSubmit : workSubmits) {
+            workSubmitDao.deleteById(workSubmit.getSid());
+            workSubmitContentDao.deleteById(workSubmit.getSid());
+        }
+        return new Result(ProjectCode.CODE_SUCCESS, null, "已将该学生移除班级啦~");
     }
 
     @Override
@@ -291,8 +354,8 @@ public class CourseServiceImpl implements CourseService {
         }else{
 
         }
-        List<WorkSubmit> submitWorks = workSubmitDao.selectList(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, wid));
-        for (WorkSubmit sw : submitWorks) {
+        List<WorkSubmit> workSubmits = workSubmitDao.selectList(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, wid));
+        for (WorkSubmit sw : workSubmits) {
             log.info("获取work");
             Integer submitId = sw.getSid();
             WorkSubmitContent swc = workSubmitContentDao.selectById(submitId);

@@ -108,8 +108,7 @@ public class TypeChange {
         return JSONArray.parseArray(str);
     }
 
-    public static String Jarr2str(JSONArray jarr){
-        String str = "";
+    public static String jarr2str(JSONArray jarr){
         ArrayList<String> as = new ArrayList<>(jarr);
         return as.toString();
     }
