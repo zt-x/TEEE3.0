@@ -21,6 +21,8 @@ public class TeacherCourseController {
     @Autowired
     CourseService courseService;
 
+
+
     @PostMapping
     public Result createCourse(@RequestHeader("Authorization") String token, @RequestBody Course course){
         return courseService.createCourse(token, course);

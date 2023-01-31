@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class fileUtil {
+public class FileUtil {
     /**
      * NIO方式压缩
      */
@@ -21,7 +21,6 @@ public class fileUtil {
         WritableByteChannel writableByteChannel = null;
         File zipFile = new File(zipFilePath + "/" + fileName);
         if (!sourceFile.exists()) {
-            System.out.println("待压缩的文件目录：" + sourceFilePath + "不存在.");
             return null;
         } else {
             try {
@@ -30,7 +29,6 @@ public class fileUtil {
                 }
                 File[] sourceFiles = sourceFile.listFiles();
                 if (null == sourceFiles || sourceFiles.length < 1) {
-                    System.out.println("待压缩的文件目录：" + sourceFilePath + "里面不存在文件，无需压缩.");
                     return null;
                 } else {
                     fos = new FileOutputStream(zipFile);
@@ -77,6 +75,5 @@ public class fileUtil {
         }
         index.delete();
         //出现几次删除成功代表有几个文件和文本文件
-        System.out.println("删除成功");
     }
 }

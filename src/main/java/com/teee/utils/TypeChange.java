@@ -28,7 +28,6 @@ public class TypeChange {
         byte[] data = null;
         // 读取图片字节数组
         try {
-            System.out.println("FilePath = " + imgFile);
             in = new FileInputStream(imgFile);
             data = new byte[in.available()];
             in.read(data);
@@ -39,7 +38,6 @@ public class TypeChange {
         // 图片头
         //String imghead = "data:image/jpeg;base64,";
         Base64.Encoder encoder = Base64.getEncoder();
-        System.out.println("Trans = " + new String(encoder.encode(data)));
         return new String(encoder.encode(data));
     }
     //获得图片的base64码

@@ -106,7 +106,6 @@ public class AutoReadOver {
                 else if (jo.get("qtype").equals(ProjectCode.QueType_text_question)) {
                     readOver.set(i, "-1");
                 } else {
-                    System.out.println("Err Cause By autoReadOver: 题目类型不存在: " + jo.get("qtype"));
                 }
             }
             int finished = 1;
@@ -125,7 +124,6 @@ public class AutoReadOver {
             log.info("分率: " + rate);
             if(rate == 0){
                 // ERR
-                System.out.println("Err Cause By SubmitSeImpl.getRate == 0");
                 rate = 1;
             }
             workSubmitContent.setFinishReadOver(finished);

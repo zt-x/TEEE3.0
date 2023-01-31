@@ -78,7 +78,21 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Result delCourse(int cid) {return null;}
+    public Result delCourse(int cid) {
+        courseDao.deleteById(cid);
+        courseUserDao.deleteById(cid);
+        List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
+        for (Work work : works) {
+            List<WorkSubmit> workSubmits = workSubmitDao.selectList(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, work.getId()));
+            for (WorkSubmit workSubmit : workSubmits) {
+                workSubmitDao.deleteById(workSubmit.getSid());
+                workSubmitContentDao.deleteById(workSubmit.getSid());
+            }
+        }
+        return new Result("删除成功!");
+    }
+
+    //TODO 2 编辑课程信息
 
     @Override
     public Result editCourse(Course course) {return null;}
@@ -350,7 +364,7 @@ public class CourseServiceImpl implements CourseService {
         File tmpdir = new File(tmpFilePath);
         if(tmpdir.isDirectory()){
             log.info("wid文件夹存在, 删除");
-            fileUtil.delFile(tmpdir);
+            FileUtil.delFile(tmpdir);
         }else{
 
         }
@@ -386,7 +400,7 @@ public class CourseServiceImpl implements CourseService {
             }
         }
         try {
-            return fileUtil.fileToZip(tmpFilePath, tempPath+File.separator + "downloadZipTemp" + File.separator,wid+".zip");
+            return FileUtil.fileToZip(tmpFilePath, tempPath+File.separator + "downloadZipTemp" + File.separator,wid+".zip");
         } catch (IOException e) {
             log.error("打包时出现异常 ...");
             e.printStackTrace();

@@ -165,13 +165,16 @@ public class UploadController {
         response.setCharacterEncoding("utf-8");
         response.setContentLength((int)file.length());
         response.setHeader("Content-Disposition", URLEncoder.encode(fileOriginName, "UTF-8"));
+        long startTime = System.currentTimeMillis();
         try {
             byte[] bytes = FileCopyUtils.copyToByteArray(file);
             OutputStream os = response.getOutputStream();
             os.write(bytes);
+            os.close();
         } catch (IOException e) {
             throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "启动下载失败了😫");
         }
+
         return null;
     }
 

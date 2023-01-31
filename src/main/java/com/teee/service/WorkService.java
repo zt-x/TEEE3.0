@@ -96,7 +96,11 @@ public interface WorkService {
      * @authorization teacher
      * @param jo: {int sid, String score}
      * @return code=1/-1, msg=""
+     * TODO 3 批改作业
      * */
+
     Result setSubmitScore(JSONObject jo);
     Result getWorkFinishStatus(String token, int cid);
+
+    Result getAllWorkSummary(Integer cid);
 }

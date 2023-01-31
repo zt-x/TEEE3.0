@@ -1,7 +1,6 @@
 package com.teee.service;
 
 import com.teee.domain.bank.BankWork;
-import com.teee.domain.work.WorkSubmit;
 import com.teee.vo.Result;
 
 import java.util.ArrayList;

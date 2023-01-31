@@ -7,12 +7,16 @@ import com.teee.dao.*;
 import com.teee.domain.bank.BankWork;
 import com.teee.domain.course.Course;
 import com.teee.domain.user.UserInfo;
-import com.teee.domain.work.*;
+import com.teee.domain.work.Work;
+import com.teee.domain.work.WorkSubmit;
+import com.teee.domain.work.WorkSubmitContent;
+import com.teee.domain.work.WorkTimer;
 import com.teee.project.ProjectCode;
 import com.teee.service.CourseService;
 import com.teee.service.WorkService;
 import com.teee.utils.JWT;
 import com.teee.utils.MyAssert;
+import com.teee.utils.TypeChange;
 import com.teee.vo.Result;
 import com.teee.vo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Xu ZhengTao
@@ -39,6 +44,8 @@ public class WorkServiceImpl implements WorkService {
 
     @Autowired
     CourseService courseService;
+    @Autowired
+    CourseUserDao courseUserDao;
     @Autowired
     WorkSubmitDao workSubmitDao;
     @Autowired
@@ -139,7 +146,6 @@ public class WorkServiceImpl implements WorkService {
 
     @Override
     public Result releaseWork(Work work) {
-        System.out.println(work);
         Course course = courseDao.selectById(work.getCid());
         MyAssert.notNull(course,"课程号不存在！");
         // TODO 验证数据合法性
@@ -149,6 +155,19 @@ public class WorkServiceImpl implements WorkService {
                 work.setDeadline("9999-12-30");
             }
             workDao.insert(work);
+            Integer wid = work.getId();
+            if(work.getIsExam() == 0){
+                ArrayList<String> arrayList = TypeChange.str2arrl(course.getWorks());
+                arrayList.add(String.valueOf(wid));
+                String s = TypeChange.arrL2str(arrayList);
+                course.setWorks(s);
+            }else{
+                ArrayList<String> arrayList = TypeChange.str2arrl(course.getExams());
+                arrayList.add(String.valueOf(wid));
+                String s = TypeChange.arrL2str(arrayList);
+                course.setExams(s);
+            }
+            courseDao.updateById(course);
             return new Result(ProjectCode.CODE_SUCCESS, work.getId(), "发布成功!");
         }catch(Exception e){
             throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "发布作业时发生异常, 已记录数据", e);
@@ -161,7 +180,21 @@ public class WorkServiceImpl implements WorkService {
         Work work = workDao.selectOne(new LambdaQueryWrapper<Work>().eq(Work::getId,jo.get("wid")));
         MyAssert.notNull(work, "这条作业已经不存在啦!");
         int i = workDao.deleteById(work.getId());
+        MyAssert.isTrue(i>0, "这条作业已经不存在啦!");
+        Course course = courseDao.selectById(work.getCid());
+        if(work.getIsExam()==1){
+            ArrayList<String> arrayList = TypeChange.str2arrl(course.getExams());
+            boolean remove = arrayList.remove(work.getId().toString());
+            MyAssert.isTrue(remove, "在课表统计部分移除");
+            course.setExams(TypeChange.arrL2str(arrayList));
+        }else{
+            ArrayList<String> arrayList = TypeChange.str2arrl(course.getWorks());
+            boolean remove = arrayList.remove(work.getId().toString());
+            MyAssert.isTrue(remove, "在课表统计部分移除");
+            course.setWorks(TypeChange.arrL2str(arrayList));
+        }
         return new Result(ProjectCode.CODE_SUCCESS, "删除成功!");
+
     }
     // TODO 1
 
@@ -201,7 +234,6 @@ public class WorkServiceImpl implements WorkService {
 
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy年MM月dd日'_'HH'时'mm'分'");
             Date date = new Date(System.currentTimeMillis());
-            System.out.println();
             response.reset();
             response.setContentType("application/octet-stream");
             response.setCharacterEncoding("utf-8");
@@ -260,5 +292,30 @@ public class WorkServiceImpl implements WorkService {
             jarr2.add(jo2);
         }
         return new Result(ProjectCode.CODE_SUCCESS, new ArrayList<String>(jarr2).toString(), "获取作业完成状态成功!");
+    }
+
+    @Override
+    public Result getAllWorkSummary(Integer cid) {
+        try{
+            JSONObject ret = new JSONObject();
+            String uids = courseUserDao.selectById(cid).getUid();
+            int submitTotalNum = uids.length() - uids.replaceAll(",", "").length() + 1;
+            ret.put("submit_totalNum", submitTotalNum);
+            ArrayList<JSONObject> arrayList = new ArrayList<>();
+            List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
+            for (Work work : works) {
+                int readOver_done = workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getFinishReadOver, 1).eq(WorkSubmit::getWid,work.getId()));
+                int submit_submitedNum = workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, work.getId()));
+                JSONObject jo = new JSONObject();
+                jo.put("wid", work.getId());
+                jo.put("subNum", submit_submitedNum);
+                jo.put("rDone", readOver_done);
+                arrayList.add(jo);
+            }
+            ret.put("works", arrayList);
+            return new Result(ProjectCode.CODE_SUCCESS, ret, "获取成功");
+        }catch (Exception e){
+            throw new BusinessException("获取作业统计时，发生了一些异常 ...", e);
+        }
     }
 }

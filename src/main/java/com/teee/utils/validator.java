@@ -15,7 +15,6 @@ public class validator {
         try {
             //if not valid, it will throw ParseException
             Date date = sdf.parse(dateToValidate);
-            System.out.println(date);
         } catch (ParseException e) {
             return false;
         }
