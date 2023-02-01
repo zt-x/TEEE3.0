@@ -333,6 +333,21 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Result getWorks_(int cid, int page, int isExam) {
+        LambdaQueryWrapper<Work> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(Work::getCid, cid).eq(Work::getIsExam, isExam);
+        Page page1 = workDao.selectPage(new Page(page, 7), lqw);
+        List<Work> works = page1.getRecords();
+        JSONArray jsonArray = new JSONArray();
+        // 装配
+        for (Work work : works) {
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(work);
+            jsonArray.add(jsonObject);
+        }
+        return new Result(Math.toIntExact(page1.getPages()), jsonArray, "获取成功");
+    }
+
+    @Override
     public Result getAnnouncements(int cid) {
         return null;
     }

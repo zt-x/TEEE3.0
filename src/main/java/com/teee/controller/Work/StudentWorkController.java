@@ -26,6 +26,10 @@ public class StudentWorkController {
         return workService.getWorkContent(wid);
     }
 
+    @GetMapping("/qContent")
+    Result getQueContent(@RequestParam("wid") int wid, @RequestParam("qid") int qid){
+        return workService.getQueContent(wid, qid);
+    }
     @GetMapping("/timer")
     Result getWorkTimer(@RequestHeader("Authorization") String token,@RequestParam("wid") int wid){
         return workService.getWorkTimer(token, wid);

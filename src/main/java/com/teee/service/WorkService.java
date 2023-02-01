@@ -19,7 +19,13 @@ public interface WorkService {
      * @return data:"questions:[{}{}{}{}]"
      */
     Result getWorkContent(int id);
-
+    /**
+     * 获取某一题的内容
+     * 同于答题卡中查看原题功能
+     * @authorization student
+     * @return data:"{qtype:xxx, xxx}"
+     */
+    Result getQueContent(int wid, int qid);
     /**
      * 获取作业计时器
      * @authorization student
@@ -64,16 +70,6 @@ public interface WorkService {
      * */
     Result editWorkInfo(Work work);
 
-    /**
-     * 获取当前作业的所有提交物
-     * @authorization teacher
-     * @param jo:{"wid":xx}
-     * @return
-     * data<JSONArray>:[
-     *      {submitId:, usernmae, uid:, finish_readover: , score: }
-     *  ]
-     * */
-    Result getWorkSubmits(JSONObject jo);
 
     /**
      * 获取当前课程的所有作业的提交情况

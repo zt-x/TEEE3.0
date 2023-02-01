@@ -26,9 +26,21 @@ public class PublicCourseController {
     public Result getCourseUsers(@RequestParam("cid") int cid){
         return courseService.getUsers(cid);
     }
+
+    //@GetMapping("/works")
+    //public Result getWorks(@RequestParam("cid") int cid){
+    //    return courseService.getWorks(cid);
+    //}
+
     @GetMapping("/works")
-    public Result getWorks(@RequestParam("cid") int cid){
-        return courseService.getWorks(cid);
+    public Result getWorks(@RequestParam("cid") int cid, @RequestParam("page") int page){
+        // 天才写法： Code为Page的总数
+        return courseService.getWorks_(cid, page, 0);
+    }
+    @GetMapping("/exams")
+    public Result getExams(@RequestParam("cid") int cid, @RequestParam("page") int page){
+        return courseService.getWorks_(cid, page, 1);
+
     }
 
     @GetMapping("/announcements")

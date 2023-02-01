@@ -12,6 +12,8 @@ import lombok.Data;
 @Data
 @TableName("bank_owner")
 public class BankOwner {
+
+    // TODO 此处ID冗余
     @TableId(type = IdType.AUTO)
     Integer id;
     @TableField("owner_id")

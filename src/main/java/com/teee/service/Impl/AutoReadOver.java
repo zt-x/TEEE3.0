@@ -27,10 +27,10 @@ public class AutoReadOver {
     WorkSubmitDao workSubmitDao;
 
 
-    //TODO 0 异步执行， 后续可能考虑使用RabbitMQ
+    // TODO 0 异步执行， 后续可能考虑使用RabbitMQ
     @Async
     public WorkSubmit autoReadOver(WorkSubmit workSubmit, boolean readChoice, boolean readFillIn) {
-        log.info("进入AutoReadOver");
+        log.info("进入AutoReadOver :" + readChoice + "|" + readFillIn);
         WorkSubmit sw = workSubmit;
         Integer submitId = sw.getSid();
         WorkSubmitContent workSubmitContent = workSubmitContentDao.selectById(submitId);
@@ -55,14 +55,13 @@ public class AutoReadOver {
                 Float qscore = Float.valueOf(jo.get("qscore").toString());
                 factTotalScore+=qscore;
                 // 选择题
-                if (jo.get("qtype").equals(ProjectCode.QueType_choice_question)) {
+                if (jo.get("qtype").equals(ProjectCode.QueType_choice_question) && readChoice) {
                     Float score = -1f;
                     ArrayList<String> cans = TypeChange.str2arrl(jo.get("cans").toString(), ",");
                     ArrayList<String> ans = TypeChange.str2arrl(submitContent.get(i), ",");
                     //cans 是正确答案
                     //ans 是学生提交的答案
                     //ans中 出现 不属于cans 的 ，则0分，否则满分
-
                     boolean isErr = false;
                     for (String an : ans) {
                         if (!cans.contains(an)) {
@@ -88,7 +87,7 @@ public class AutoReadOver {
                     readOver.set(i,String.format("%.2f", score));
                 }
                 // 填空题
-                else if (jo.get("qtype").equals(ProjectCode.QueType_fillin_question)) {
+                else if (jo.get("qtype").equals(ProjectCode.QueType_fillin_question) && readFillIn) {
                     try{
                         String ans = submitContent.get(i).replaceAll("&douhao;", ",");
                         String cans = jo.getString("cans");
@@ -106,6 +105,7 @@ public class AutoReadOver {
                 else if (jo.get("qtype").equals(ProjectCode.QueType_text_question)) {
                     readOver.set(i, "-1");
                 } else {
+                    readOver.set(i, "-1");
                 }
             }
             int finished = 1;

@@ -19,6 +19,7 @@ import com.teee.utils.MyAssert;
 import com.teee.utils.TypeChange;
 import com.teee.vo.Result;
 import com.teee.vo.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -39,6 +40,7 @@ import java.util.List;
  * @version 3.0
  */
 @Service
+@Slf4j
 public class WorkServiceImpl implements WorkService {
 
 
@@ -79,6 +81,20 @@ public class WorkServiceImpl implements WorkService {
             throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "解析题库时异常", e);
         }
     }
+
+    @Override
+    public Result getQueContent(int wid, int qid) {
+        // TODO 4
+        Work work = workDao.selectById(wid);
+        MyAssert.notNull(work,"作业不存在😮");
+        BankWork bankWork = bankWorkDao.selectById(work.getBwid());
+        MyAssert.notNull(bankWork, "作业内容不存在😮");
+        String bakQue = bankWork.getQuestions().replaceAll(",\\\\\\\"cans\\\\\\\":\\\\\\\".+\\\\\"", "");
+        JSONArray arrayList = TypeChange.str2Jarr(bakQue);
+        MyAssert.isTrue(qid<=arrayList.size() && qid>0,"找不到该题目的内容 QAQ");
+        return new Result(arrayList.get(qid-1), "获取成功");
+    }
+
     @Override
     public Result getWorkTimer(String token, int wid) {
         try{
@@ -132,6 +148,7 @@ public class WorkServiceImpl implements WorkService {
             workSubmitDao.insert(submitWork);
             boolean readChoice = (workDao.selectById(submitWork.getWid()).getAutoReadoverChoice() == 1);
             boolean readFillIn = (workDao.selectById(submitWork.getWid()).getAutoReadoverFillIn() == 1);
+            System.out.println("rC:" + readChoice + " | rF:" + readFillIn);
             try{
                 autoReadOver.autoReadOver(submitWork, readChoice, readFillIn);
             }catch(Exception e){
@@ -149,7 +166,6 @@ public class WorkServiceImpl implements WorkService {
         Course course = courseDao.selectById(work.getCid());
         MyAssert.notNull(course,"课程号不存在！");
         // TODO 验证数据合法性
-        // 写入AWorkDao数据库
         try{
             if ("".equals(work.getDeadline())) {
                 work.setDeadline("9999-12-30");
@@ -187,14 +203,15 @@ public class WorkServiceImpl implements WorkService {
             boolean remove = arrayList.remove(work.getId().toString());
             MyAssert.isTrue(remove, "在课表统计部分移除");
             course.setExams(TypeChange.arrL2str(arrayList));
+            courseDao.updateById(course);
         }else{
             ArrayList<String> arrayList = TypeChange.str2arrl(course.getWorks());
             boolean remove = arrayList.remove(work.getId().toString());
             MyAssert.isTrue(remove, "在课表统计部分移除");
             course.setWorks(TypeChange.arrL2str(arrayList));
+            courseDao.updateById(course);
         }
         return new Result(ProjectCode.CODE_SUCCESS, "删除成功!");
-
     }
     // TODO 1
 
@@ -209,12 +226,6 @@ public class WorkServiceImpl implements WorkService {
     }
 
 
-    // TODO 3
-
-    @Override
-    public Result getWorkSubmits(JSONObject jo) {
-        return null;
-    }
 
     // TODO 2
 
@@ -304,12 +315,12 @@ public class WorkServiceImpl implements WorkService {
             ArrayList<JSONObject> arrayList = new ArrayList<>();
             List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
             for (Work work : works) {
-                int readOver_done = workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getFinishReadOver, 1).eq(WorkSubmit::getWid,work.getId()));
-                int submit_submitedNum = workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, work.getId()));
+                int readOverDone = workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getFinishReadOver, 1).eq(WorkSubmit::getWid,work.getId()));
+                int submitSubmitedNum = workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, work.getId()));
                 JSONObject jo = new JSONObject();
                 jo.put("wid", work.getId());
-                jo.put("subNum", submit_submitedNum);
-                jo.put("rDone", readOver_done);
+                jo.put("subNum", submitSubmitedNum);
+                jo.put("rDone", readOverDone);
                 arrayList.add(jo);
             }
             ret.put("works", arrayList);

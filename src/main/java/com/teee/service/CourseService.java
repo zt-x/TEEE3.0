@@ -24,6 +24,7 @@ public interface CourseService {
 
     Result getUsers(int cid);
     Result getWorks(int cid);
+    Result getWorks_(int cid, int page, int isExam);
     Result getAnnouncements(int cid);
     File packageFile(int wid);
 }

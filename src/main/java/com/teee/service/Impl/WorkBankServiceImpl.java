@@ -140,9 +140,7 @@ public class WorkBankServiceImpl implements WorkBankService {
                 for (String s : arrayList) {
                     JSONObject o = new JSONObject();
                     BankWork bankWork = bankWorkDao.selectById(Integer.valueOf(s));
-                    if(bankWork.getIsTemp() == 1){
-                        continue;
-                    }else {
+                    if(bankWork.getIsTemp() != 1){
                         o.put("id", bankWork.getBwid());
                         o.put("isPrivate", bankWork.getIsPrivate());
                         o.put("bankName", bankWork.getBwname());
