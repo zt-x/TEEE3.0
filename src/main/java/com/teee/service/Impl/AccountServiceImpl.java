@@ -103,7 +103,7 @@ public class AccountServiceImpl implements AccountService {
             routers.add(rf.getRouterObject("Course | 我的课程", "/course", "courseView.vue", "mdi-book", true));
             routers.add(rf.getRouterObject("CourseContent", "/CourseContent", "courseContent.vue", "", false));
             routers.add(rf.getRouterObject("WorkContent", "/WorkContent", "Course/WorkContent.vue", "", false));
-            routers.add(rf.getRouterObject("Bank | 作业库/题库管理", "/BankManager", "BankManagerView.vue", "mdi-bank-outline", true));
+            routers.add(rf.getRouterObject("Bank | 作业库/题库管理", "/BankManager", "bankManagerView.vue", "mdi-briefcase-minus", true));
 
         }else if(ProjectRole.STUDENT.ordinal() == role){
             routers.add(rf.getRouterObject("Home | 主页", "/home", "home_student.vue", "mdi-home", true));

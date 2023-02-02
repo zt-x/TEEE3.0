@@ -22,7 +22,6 @@ public class WorkBankController {
         Long tid = JWT.getUid(token);
         return workBankService.createWorkBank(bankWork, tid);
     }
-
     @GetMapping
     @RoleCheck(role = ProjectRole.TEACHER)
     public Result getMyWorkBank(@RequestHeader("Authorization") String token){
@@ -30,13 +29,17 @@ public class WorkBankController {
     }
 
     @GetMapping("/content")
-    public Result getWorkBankContentById(String token, Integer wbid){
-        return workBankService.getWorkBankContent(JWT.getUid(token),wbid);
+    public Result getWorkBankContentById(@RequestHeader("Authorization") String token,@RequestParam("bwid") Integer bankWorkId){
+        return workBankService.getWorkBankContent(JWT.getUid(token),bankWorkId);
     }
-
+    @GetMapping("/questions")
+    @RoleCheck(role = ProjectRole.TEACHER)
+    public Result getWorkBankQuestions(@RequestHeader("Authorization") String token,@RequestParam("bwid") Integer bankWorkId){
+        return workBankService.getWorkBankQuestions(JWT.getRole(token), bankWorkId);
+    }
     @PutMapping
     @RoleCheck(role = ProjectRole.TEACHER)
-    public Result editWorkBank(BankWork bankWork){
+    public Result editWorkBank(@RequestBody BankWork bankWork){
         return workBankService.editWorksBank(bankWork);
     }
 

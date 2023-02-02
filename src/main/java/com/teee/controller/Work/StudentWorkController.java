@@ -22,8 +22,8 @@ public class StudentWorkController {
     };
 
     @GetMapping("/content")
-    Result getWorkContent(@RequestParam("wid") int wid){
-        return workService.getWorkContent(wid);
+    Result getWorkContent(@RequestHeader("Authorization") String token,@RequestParam("wid") int wid){
+        return workService.getWorkContent(token,wid);
     }
 
     @GetMapping("/qContent")

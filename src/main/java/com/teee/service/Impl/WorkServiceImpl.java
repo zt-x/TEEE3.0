@@ -13,9 +13,11 @@ import com.teee.domain.work.WorkSubmitContent;
 import com.teee.domain.work.WorkTimer;
 import com.teee.project.ProjectCode;
 import com.teee.service.CourseService;
+import com.teee.service.WorkBankService;
 import com.teee.service.WorkService;
 import com.teee.utils.JWT;
 import com.teee.utils.MyAssert;
+import com.teee.utils.SpringBeanUtil;
 import com.teee.utils.TypeChange;
 import com.teee.vo.Result;
 import com.teee.vo.exception.BusinessException;
@@ -68,18 +70,12 @@ public class WorkServiceImpl implements WorkService {
 
 
     @Override
-    public Result getWorkContent(int id) {
-
+    public Result getWorkContent(String token, int id) {
+        int role = JWT.getRole(token);
         Work work = workDao.selectById(id);
         MyAssert.notNull(work,"作业不存在😮");
-        BankWork bankWork = bankWorkDao.selectById(work.getBwid());
-        MyAssert.notNull(bankWork, "作业内容不存在😮");
-        try{
-            String bakQue = bankWork.getQuestions().replaceAll(",\\\\\\\"cans\\\\\\\":\\\\\\\".+\\\\\"", "");
-            return new Result(ProjectCode.CODE_SUCCESS,bakQue,"获取成功");
-        }catch (Exception e){
-            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "解析题库时异常", e);
-        }
+        WorkBankService workBankService= SpringBeanUtil.getBean(WorkBankService.class);
+        return workBankService.getWorkBankQuestions(role, work.getBwid());
     }
 
     @Override

@@ -18,7 +18,7 @@ public interface WorkService {
      * @authorization student
      * @return data:"questions:[{}{}{}{}]"
      */
-    Result getWorkContent(int id);
+    Result getWorkContent(String token, int id);
     /**
      * 获取某一题的内容
      * 同于答题卡中查看原题功能

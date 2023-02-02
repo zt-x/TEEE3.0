@@ -111,6 +111,30 @@ public class WorkBankServiceImpl implements WorkBankService {
         return new Result(jsonObject);
     }
 
+    /**
+     * 获取完整的Bank内容
+     * */
+    @Override
+    public Result getWorkBankQuestions(int role, Integer wbid) {
+        BankWork bankWork = bankWorkDao.selectById(wbid);
+        MyAssert.notNull(bankWork, "作业内容不存在😮");
+        try{
+            String bakQue;
+            if(role>=1){
+                bakQue = bankWork.getQuestions();
+            }else{
+                bakQue = bankWork.getQuestions()
+                        .replaceAll(",\\\"cans\":\\\"[^\\\"]*\\\"","")
+                        .replaceAll(",\"isCorr\":false","")
+                        .replaceAll(",\"isCorr\":true","");
+            }
+            bankWork.setQuestions(bakQue);
+            return new Result(ProjectCode.CODE_SUCCESS,bankWork,"获取成功");
+        }catch (Exception e){
+            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "解析题库时异常", e);
+        }
+    }
+
     @Override
     public Result deleteWorkBank(Integer bwid) {
         bankWorkDao.deleteById(bwid);
@@ -119,6 +143,7 @@ public class WorkBankServiceImpl implements WorkBankService {
 
     @Override
     public Result editWorksBank(BankWork bankWork) {
+        System.out.println(bankWork);
         return new Result(bankWorkDao.updateById(bankWork)>0?"修改信息成功啦":"修改时好像出了点问题 ...");
     }
 
@@ -171,9 +196,5 @@ public class WorkBankServiceImpl implements WorkBankService {
         }
         return new Result("添加成功!");
     }
-    //
-    //@Override
-    //public Float readOverWork(BankWork standardBankWork, WorkSubmit submitWork) {
-    //    return null;
-    //}
+
 }

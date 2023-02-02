@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public interface WorkBankService{
     Result createWorkBank(BankWork bankWork, Long tid);
     Result getWorkBankContent(Long tid, Integer wbid);
+    Result getWorkBankQuestions(int role, Integer wbid);
     Result deleteWorkBank(Integer work_id);
     Result editWorksBank(BankWork bankWork);
     BankWork getWorkBankById(Integer work_id);
