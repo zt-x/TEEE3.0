@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @TableName("work_submit")
 public class WorkSubmit {
-    @TableId(type = IdType.AUTO)
+    @TableId
     private  Integer sid;
     private Long uid;
     private Integer wid;

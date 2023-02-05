@@ -73,7 +73,7 @@ public class WorkServiceImpl implements WorkService {
     public Result getWorkContent(String token, int id) {
         int role = JWT.getRole(token);
         Work work = workDao.selectById(id);
-        MyAssert.notNull(work,"作业不存在😮");
+        MyAssert.notNull(work,"😮 作业不存在");
         WorkBankService workBankService= SpringBeanUtil.getBean(WorkBankService.class);
         return workBankService.getWorkBankQuestions(role, work.getBwid());
     }
@@ -82,9 +82,9 @@ public class WorkServiceImpl implements WorkService {
     public Result getQueContent(int wid, int qid) {
         // TODO 4
         Work work = workDao.selectById(wid);
-        MyAssert.notNull(work,"作业不存在😮");
+        MyAssert.notNull(work,"😮 作业不存在");
         BankWork bankWork = bankWorkDao.selectById(work.getBwid());
-        MyAssert.notNull(bankWork, "作业内容不存在😮");
+        MyAssert.notNull(bankWork, "😮 作业内容不存在");
         String bakQue = bankWork.getQuestions().replaceAll(",\\\\\\\"cans\\\\\\\":\\\\\\\".+\\\\\"", "");
         JSONArray arrayList = TypeChange.str2Jarr(bakQue);
         MyAssert.isTrue(qid<=arrayList.size() && qid>0,"找不到该题目的内容 QAQ");
@@ -103,7 +103,7 @@ public class WorkServiceImpl implements WorkService {
                 workTimer.setUid(uid);
                 workTimer.setWid(wid);
                 Work work = workDao.selectOne(new LambdaQueryWrapper<Work>().eq(Work::getId, wid));
-                MyAssert.notNull(work, "创建Timer时错误：无法找到作业");
+                MyAssert.notNull(work, "😮 创建计时器时错误：无法找到作业");
                 try{
                     Float timeLimit = work.getTimeLimit();
                     workTimer.setRestTime(String.valueOf(timeLimit*60.0));
@@ -144,7 +144,6 @@ public class WorkServiceImpl implements WorkService {
             workSubmitDao.insert(submitWork);
             boolean readChoice = (workDao.selectById(submitWork.getWid()).getAutoReadoverChoice() == 1);
             boolean readFillIn = (workDao.selectById(submitWork.getWid()).getAutoReadoverFillIn() == 1);
-            System.out.println("rC:" + readChoice + " | rF:" + readFillIn);
             try{
                 autoReadOver.autoReadOver(submitWork, readChoice, readFillIn);
             }catch(Exception e){
@@ -152,7 +151,7 @@ public class WorkServiceImpl implements WorkService {
             }
             return new Result(ProjectCode.CODE_SUCCESS, null, "提交成功");
         }catch (Exception e){
-            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "😫系统在提交过程出了些问题", e);
+            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "😫 系统在提交过程出了些问题", e);
 
         }
     }

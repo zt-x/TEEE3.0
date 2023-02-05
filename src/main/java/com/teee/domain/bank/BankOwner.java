@@ -13,14 +13,20 @@ import lombok.Data;
 @TableName("bank_owner")
 public class BankOwner {
 
-    // TODO 此处ID冗余
-    @TableId(type = IdType.AUTO)
-    Integer id;
-    @TableField("owner_id")
+    @TableId("owner_id")
     Long oid;
     @TableField("bids")
     String bids;
 
     @TableField("bank_type")
     Integer bankType;
+
+
+    public BankOwner(Long oid, String bids) {
+        this.oid = oid;
+        this.bids = bids;
+    }
+
+    public BankOwner() {
+    }
 }

@@ -203,7 +203,6 @@ public class CourseServiceImpl implements CourseService {
                 avarage = avarage/ (workSubmits.size() == 0?1:workSubmits.size());
                 ret.put("workAverageScore", avarage);
                 ret.put("finishWorkNum", fwn);
-
                 jarr.add(ret);
             }
             return new Result(ProjectCode.CODE_SUCCESS, TypeChange.jarr2str(jarr), "获取用户成功");
@@ -216,7 +215,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Result removeUserFromCourse(Long uid, JSONObject jo) {
         int cid = (Integer) jo.get("cid");
-        // TODO 3 需要完成 学生提交作业 功能后
         // 从Course_user表移除
         CourseUser courseUser = courseUserDao.selectById(cid);
         MyAssert.notNull(courseUser, "该学生已不在这个班级啦！");
@@ -224,8 +222,9 @@ public class CourseServiceImpl implements CourseService {
         String[] split = courseUser.getUid().replace("[", "").replace("]", "").split(",");
         if(!split[0].equals("")){
             for (String s : split) {
-                if(!s.equals(uid.toString())){
+                if(!s.trim().equals(uid.toString())){
                     uids.add(Long.valueOf(s.trim()));
+                }else{
                 }
             }
         }
@@ -237,12 +236,14 @@ public class CourseServiceImpl implements CourseService {
         split = userCourse.getCid().replace("[", "").replace("]", "").split(",");
         if(!"".equals(split[0])){
             for (String s : split) {
-                if(!s.equals(String.valueOf(cid))){
+                if(!s.trim().equals(String.valueOf(cid))){
                     cids.add(Integer.valueOf(s.trim()));
                 }
             }
         }
-
+        userCourse.setCid(cids.toString());
+        userCourseDao.updateById(userCourse);
+        courseUserDao.updateById(courseUser);
         // 删除该生提交作业的记录
         LambdaQueryWrapper<WorkSubmit> eq = new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getUid, uid);
         List<WorkSubmit> workSubmits = workSubmitDao.selectList(eq);
@@ -280,7 +281,7 @@ public class CourseServiceImpl implements CourseService {
             JSONObject courseJson = null;
             try{
                 UserCourse userCourse = userCourseDao.selectById(JWT.getUid(token));
-                if(userCourse == null){
+                if(userCourse == null || "".equals(userCourse.getCid()) || "[]".equals(userCourse.getCid())){
                     return new Result(ProjectCode.CODE_SUCCESS_NoCourse, null, "您还没有选课~");
                 }
                 String[] cids = userCourse.getCid().replace("[", "").replace("]", "").split(",");
@@ -302,7 +303,7 @@ public class CourseServiceImpl implements CourseService {
                 throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "获取课程时发生了一点错误 ...", npe);
             }
         }else{
-            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS,"😣获取身份失败 ... ");
+            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS,"😣 获取身份失败 ... ");
         }
     }
 

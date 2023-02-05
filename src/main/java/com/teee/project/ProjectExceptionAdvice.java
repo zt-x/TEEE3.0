@@ -52,6 +52,7 @@ public class ProjectExceptionAdvice {
 
     @ExceptionHandler(NumberFormatException.class)
     public Result doNumberFormatException(NumberFormatException e){
+        e.printStackTrace();
         return new Result(ProjectCode.CODE_EXCEPTION_BUSSINESS,null, "数字的格式不正确!");
     }
 }

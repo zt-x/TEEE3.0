@@ -24,4 +24,10 @@ public class ProjectCode {
     public static final Integer QueType_choice_question = 30010;
     public static final Integer QueType_fillin_question = 30011;
     public static final Integer QueType_text_question = 30012;
+
+    //KEY
+    public static final Integer KEY_INTER_COURSE = 0;
+    public static final Integer KEY_IMPORT_WORKBANK = 1;
+    public static final Integer KEY_SIGN_IN = 2;
+
 }

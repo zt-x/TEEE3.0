@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @TableName("work_submit_content")
 public class WorkSubmitContent {
-    @TableId(type = IdType.AUTO)
+    @TableId(type =  IdType.AUTO)
     private Integer sid;
     /** ["","",""]*/
     private String submitContent;

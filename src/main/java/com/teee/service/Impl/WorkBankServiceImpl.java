@@ -12,7 +12,9 @@ import com.teee.domain.bank.BankWork;
 import com.teee.domain.user.UserInfo;
 import com.teee.domain.work.Work;
 import com.teee.domain.work.WorkSubmit;
+import com.teee.project.Annoation.RoleCheck;
 import com.teee.project.ProjectCode;
+import com.teee.project.ProjectRole;
 import com.teee.service.WorkBankService;
 import com.teee.utils.MyAssert;
 import com.teee.utils.TypeChange;
@@ -69,6 +71,26 @@ public class WorkBankServiceImpl implements WorkBankService {
         }catch (Exception e){
             throw new BusinessException("创建作业库时发生异常",e);
 
+        }
+    }
+
+    @Override
+    @RoleCheck(role = ProjectRole.TEACHER)
+    public Result importWorkBank(Integer bid, Long tid) {
+        BankOwner bankOwner = bankOwnerDao.selectById(tid);
+        if(bankOwner == null){
+            bankOwnerDao.insert(new BankOwner(tid, "[]"));
+            bankOwner = bankOwnerDao.selectById(tid);
+        }
+        String bids = bankOwner.getBids();
+        ArrayList<String> arrayList = TypeChange.str2arrl(bids);
+        if(!arrayList.contains(bid.toString())){
+            arrayList.add(bid.toString());
+            bankOwner.setBids(TypeChange.arrL2str(arrayList));
+            bankOwnerDao.updateById(bankOwner);
+            return new Result("添加成功");
+        }else{
+            return new Result("您已经添加过这个库啦!");
         }
     }
 
@@ -143,7 +165,6 @@ public class WorkBankServiceImpl implements WorkBankService {
 
     @Override
     public Result editWorksBank(BankWork bankWork) {
-        System.out.println(bankWork);
         return new Result(bankWorkDao.updateById(bankWork)>0?"修改信息成功啦":"修改时好像出了点问题 ...");
     }
 
@@ -156,9 +177,9 @@ public class WorkBankServiceImpl implements WorkBankService {
     public Result getWorkBankByOnwer(Long owner) {
         JSONArray jarr = new JSONArray();
         LambdaQueryWrapper<BankOwner> lqw = new LambdaQueryWrapper<>();
+        BankOwner bankOwner = bankOwnerDao.selectOne(lqw.eq(BankOwner::getOid, owner).eq(BankOwner::getBankType, 0));
+        MyAssert.notNull(bankOwner,"您还没有创建或导入过作业库哦~");
         try{
-            BankOwner bankOwner = bankOwnerDao.selectOne(lqw.eq(BankOwner::getOid, owner).eq(BankOwner::getBankType, 0));
-            MyAssert.notNull(bankOwner,"BankOwner不存在, tid=" + owner);
             String bids = bankOwner.getBids();
             ArrayList<String> arrayList = TypeChange.str2arrl(bids);
             if(arrayList.size() > 0){
@@ -176,7 +197,7 @@ public class WorkBankServiceImpl implements WorkBankService {
                 }
                 return new Result(jarr);
             }else{
-                throw new BusinessException("列表为空");
+                return new Result("[]","没有添加库");
             }
         }catch(Exception e){
             throw new BusinessException("获取作业库时出了些问题 ... ",e);

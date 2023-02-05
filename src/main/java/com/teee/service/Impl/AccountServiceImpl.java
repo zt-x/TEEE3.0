@@ -97,17 +97,17 @@ public class AccountServiceImpl implements AccountService {
         ArrayList<JSONObject> routers = new ArrayList<>();
         if(ProjectRole.ADMIN.ordinal() == role){
             routers.add(rf.getRouterObject("Admin临时注册机😆", "/register", "Register.vue", "fa fa-camera", true));
-            routers.add(rf.getRouterObject("Home | 主页", "/home", "home_admin.vue", "mdi-home", true));
+            routers.add(rf.getRouterObject("主页", "/home", "home_admin.vue", "mdi-home", true));
         }else if(ProjectRole.TEACHER.ordinal() == role){
-            routers.add(rf.getRouterObject("Home | 主页", "/home", "home_teacher.vue", "mdi-home", true));
-            routers.add(rf.getRouterObject("Course | 我的课程", "/course", "courseView.vue", "mdi-book", true));
+            routers.add(rf.getRouterObject("主页", "/home", "home_teacher.vue", "mdi-home", true));
+            routers.add(rf.getRouterObject("我的课程", "/course", "courseView.vue", "mdi-book", true));
             routers.add(rf.getRouterObject("CourseContent", "/CourseContent", "courseContent.vue", "", false));
             routers.add(rf.getRouterObject("WorkContent", "/WorkContent", "Course/WorkContent.vue", "", false));
-            routers.add(rf.getRouterObject("Bank | 作业库/题库管理", "/BankManager", "bankManagerView.vue", "mdi-briefcase-minus", true));
+            routers.add(rf.getRouterObject("作业库管理", "/BankManager", "bankManagerView.vue", "mdi-briefcase-minus", true));
 
         }else if(ProjectRole.STUDENT.ordinal() == role){
-            routers.add(rf.getRouterObject("Home | 主页", "/home", "home_student.vue", "mdi-home", true));
-            routers.add(rf.getRouterObject("Course | 我的课程", "/course", "courseView.vue", "mdi-book", true));
+            routers.add(rf.getRouterObject("主页", "/home", "home_student.vue", "mdi-home", true));
+            routers.add(rf.getRouterObject("我的课程", "/course", "courseView.vue", "mdi-book", true));
             routers.add(rf.getRouterObject("CourseContent", "/CourseContent", "courseContent.vue", "", false));
             // TODO 0 添加路由
         }
