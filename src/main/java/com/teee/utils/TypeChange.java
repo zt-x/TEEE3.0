@@ -102,7 +102,6 @@ public class TypeChange {
         }
     }
     public static JSONArray str2Jarr(String str){
-
         return JSONArray.parseArray(str);
     }
 
