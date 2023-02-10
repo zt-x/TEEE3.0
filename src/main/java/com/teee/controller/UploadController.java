@@ -110,7 +110,8 @@ public class UploadController {
                 if(fileName == null){
                     fileName = UUID.randomUUID().toString();
                 }
-                String suffixName = fileName.substring(fileName.lastIndexOf("."));
+                int point = fileName.lastIndexOf(".");
+                String suffixName = point>0?fileName.substring(point):"";
                 log.info("上传: " + fileName + ", 后缀: " + suffixName);
                 File fileTempObj = new File(filePath + File.separator + "TimeStamp_" +  System.currentTimeMillis() + "_" + fileName);
                 if(!fileTempObj.getParentFile().exists()){

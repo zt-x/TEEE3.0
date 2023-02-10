@@ -394,6 +394,9 @@ public class CourseServiceImpl implements CourseService {
             for (int i = 1; i <= file_list.size(); i++) {
                 // 第 i 题
                 log.info("  获取第" + i + "题");
+                if(file_list.get(i-1).equals("noFile")){
+                    continue;
+                }
                 ArrayList<String> ans_file = TypeChange.str2arrl(file_list.get(i-1), ",");
                 // 第 i1 个附件
                 for (int i1 = 0; i1 < ans_file.size(); i1++) {

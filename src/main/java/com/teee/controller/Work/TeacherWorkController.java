@@ -45,7 +45,7 @@ public class TeacherWorkController {
         return examService.getRuleForExam(wid);
     }
 
-    @GetMapping("/downloadAll")
+    @PostMapping("/downloadAll")
     public Result downloadFiles(@RequestParam("wid") Integer wid, HttpServletResponse response){
         return workService.downloadFiles(wid,response);
     }
