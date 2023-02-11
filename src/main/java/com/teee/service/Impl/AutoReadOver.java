@@ -29,7 +29,7 @@ public class AutoReadOver {
 
     // TODO 0 异步执行， 后续可能考虑使用RabbitMQ
     @Async
-    public WorkSubmit autoReadOver(WorkSubmit workSubmit, boolean readChoice, boolean readFillIn) {
+    public void autoReadOver(WorkSubmit workSubmit, boolean readChoice, boolean readFillIn) {
         log.info("进入AutoReadOver :" + readChoice + "|" + readFillIn);
         WorkSubmit sw = workSubmit;
         Integer submitId = sw.getSid();
@@ -135,16 +135,15 @@ public class AutoReadOver {
                 workSubmitContentDao.updateById(workSubmitContent);
                 workSubmitDao.updateById(sw);
                 log.info("结束AutoReadOver");
-                return sw;
+                return;
             }catch (Exception e){
                 log.info("结束AutoReadOver");
-                return null;
+                return;
             }
         }else{
             log.info("结束AutoReadOver");
             log.info("WorkCointent 为 null");
         }
         log.info("结束AutoReadOver");
-        return sw;
     }
 }

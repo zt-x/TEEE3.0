@@ -60,7 +60,7 @@ public class JWT {
             Jws<Claims> claimsJws = jwtParser.setSigningKey(SIGNATURE).parseClaimsJws(token);
             return claimsJws.getBody();
         }catch (Exception e){
-            throw new SystemException(ProjectCode.CODE_EXCEPTION_SYSTEM, "解析TOKEN时出错",e);
+            throw new SystemException(ProjectCode.CODE_EXCEPTION_SYSTEM, "您的登录状态过期啦, 请重新登陆哦",e);
         }
 
     }
