@@ -12,7 +12,7 @@ public interface AccountService {
     Result register(JSONObject jo);
     Result login(JSONObject jo);
     Result updateUserInfo(JSONObject jo);
-    Result getUserInfo(JSONObject jo);
+    Result getUserInfo(Long uid);
     Result getBaseUserInfo(String token);
     Result delUser(JSONObject jo);
 }

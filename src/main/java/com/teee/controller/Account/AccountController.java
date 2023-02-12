@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teee.project.Annoation.RoleCheck;
 import com.teee.project.ProjectRole;
 import com.teee.service.AccountService;
+import com.teee.utils.JWT;
 import com.teee.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +30,11 @@ public class AccountController {
 
     @GetMapping
     @RoleCheck(role = ProjectRole.STUDENT)
-    /** jo:{uid: uid} */
-    public Result getUserInfo(@RequestBody JSONObject jo){
-        return accountService.getUserInfo(jo);
+    public Result getUserInfo(@RequestHeader("Authorization") String token,@RequestParam(required = false, value = "uid") Long uid){
+        if(uid == null || uid==-1){
+            uid = JWT.getUid(token);
+        }
+        return accountService.getUserInfo(uid);
     }
 
     @GetMapping("/routes")

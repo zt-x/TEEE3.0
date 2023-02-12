@@ -87,8 +87,8 @@ public class AccountServiceImpl implements AccountService {
         return new Result(ProjectCode.CODE_SUCCESS, null, "编辑资料成功!");
     }
     @Override
-    public Result getUserInfo(JSONObject jo) {
-        return new Result(ProjectCode.CODE_SUCCESS,userInfoDao.selectById(jo.getLong("uid")),"查询成功");
+    public Result getUserInfo(Long uid) {
+        return new Result(ProjectCode.CODE_SUCCESS,userInfoDao.selectById(uid),"查询成功");
     }
 
 
