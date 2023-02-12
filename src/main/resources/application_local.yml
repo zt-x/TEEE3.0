@@ -11,15 +11,15 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/TEEE_DB
-    username: TEEE
-    password: teee123456
+    url: jdbc:mysql://localhost:3306/teee3
+    username: root
+    password: Root_123456
 path:
   pic:
-    works: /usr/local/TEEE/testpic/
-    faces: /usr/local/TEEE/testFace/
+    works: D:/testpic/
+    faces: D:/testFace/
   file:
-    files: /usr/local/TEEE/testfile/
-    temps: /usr/local/TEEE/testTemp/
+    files: D:/testfile/
+    temps: D:/testTemp/
 Tencent:
   token: eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJzZWNyZXRJZCI6IkFLSURqVTZaTXhXaW9va2FMelhqcnNqUHRBSUczaEVib3BXRSIsInNlY3JldEtleSI6ImdIaTVMUXdLV2JUQWgzREQyWXRBRkF2WTVSY2RWQmkzIiwiZXhwIjoxMDMxNDU3NjMyNiwianRpIjoiM2QyOWU5MWYtZjQxZS00NTE1LWI0MmUtYTk2OTM1ZDM4YTE3In0.7xkfCZvfqeG5Y-dpiMpONvSRndtZRzKO04TYbt_svdY
