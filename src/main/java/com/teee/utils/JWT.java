@@ -2,6 +2,7 @@ package com.teee.utils;
 
 
 import com.teee.project.ProjectCode;
+import com.teee.project.ProjectRole;
 import com.teee.vo.exception.SystemException;
 import io.jsonwebtoken.*;
 
@@ -69,6 +70,15 @@ public class JWT {
     }
     public static int getRole(String token){
         return Integer.parseInt(String.valueOf(parse(token).get("role")));
+    }
+    public static boolean isStudent(String token){
+        return getRole(token) == ProjectRole.STUDENT.ordinal();
+    }
+    public static boolean isTeacher(String token){
+        return getRole(token) == ProjectRole.TEACHER.ordinal();
+    }
+    public static boolean isAdmin(String token){
+        return getRole(token) == ProjectRole.ADMIN.ordinal();
     }
 }
 

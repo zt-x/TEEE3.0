@@ -23,7 +23,7 @@ import com.teee.vo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.*;
 
 
 @Service
@@ -218,4 +218,17 @@ public class WorkBankServiceImpl implements WorkBankService {
         return new Result("添加成功!");
     }
 
+    @Override
+    public Result getMyBankSummary(Long tid) {
+        List<BankWork> bankWorks = bankWorkDao.selectList(new LambdaQueryWrapper<BankWork>().eq(BankWork::getOwner, tid).eq(BankWork::getIsTemp, 0));
+        ArrayList<JSONObject> ret = new ArrayList<>();
+        for (BankWork bankWork : bankWorks) {
+            JSONObject jo = new JSONObject();
+            jo.put("bwname", bankWork.getBwname());
+            jo.put("usageCount", workDao.selectCount(new LambdaQueryWrapper<Work>().eq(Work::getBwid, bankWork.getBwid())));
+            ret.add(jo);
+        }
+        ret.sort((o1, o2) -> o2.getInteger("usageCount") - o1.getInteger("usageCount"));
+        return new Result(ret.subList(0,5));
+    }
 }

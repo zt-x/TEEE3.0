@@ -13,6 +13,8 @@ public class BusinessException extends RuntimeException {
         this.code = code;
     }
 
+
+
     public BusinessException(String message){
         super(message);
     }
@@ -26,7 +28,11 @@ public class BusinessException extends RuntimeException {
         this.code = code;
     }
 
-    public BusinessException(Integer code,String message, Throwable cause) {
+    public BusinessException(Integer code) {
+        this.code = code;
+    }
+
+    public BusinessException(Integer code, String message, Throwable cause) {
         super(message, cause);
         this.code = code;
         cause.printStackTrace();

@@ -18,6 +18,7 @@ public interface WorkBankService{
     BankWork getWorkBankById(Integer work_id);
     Result getWorkBankByOnwer(Long owner);
     Result addBankTags(Integer workId, ArrayList<String> tags);
+    Result getMyBankSummary(Long tid);
     // 批改作业，返回得分
     //Float readOverWork(BankWork standardBankWork, WorkSubmit submitWork);
 }

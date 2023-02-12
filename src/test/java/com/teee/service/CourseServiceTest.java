@@ -10,10 +10,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class CourseServiceTest {
     @Autowired
     CourseService courseService;
-
+    @Autowired
+    WorkBankService workBankService;
 
     @Test
     public void getWorks(){
         log.info(courseService.getWorks(28).toString());
+    }
+
+    @Test
+    public void conut(){
+        workBankService.getMyBankSummary(1L);
     }
 }

@@ -78,6 +78,36 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Result getCoursesTodo(String token) {
+        /*返回值 [{cid,cname,count},{}]*/
+        JSONArray ret = new JSONArray();
+        Long tid = JWT.getUid(token);
+        List<Course> courses = courseDao.selectList(new LambdaQueryWrapper<Course>().eq(Course::getTid, tid));
+        MyAssert.notNullSafe(courses);
+        for (Course course : courses) {
+            System.out.println("正在寻找: " + course.getCname());
+            Integer cid = course.getCid();
+            List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
+            int count=0;
+            for (Work work : works) {
+                System.out.println("   - 正在寻找作业: " + work.getWname());
+                Integer workId  = work.getId();
+                count += workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, workId).eq(WorkSubmit::getFinishReadOver, 0));
+            }
+            if(count<=0){
+                continue;
+            }
+            JSONObject cs = new JSONObject();
+            cs.put("cid",cid);
+            cs.put("avatar", userInfoDao.selectById(course.getTid()).getAvatar());
+            cs.put("cname",course.getCname());
+            cs.put("count", count);
+            ret.add(cs);
+        }
+        return new Result(ret);
+    }
+
+    @Override
     public Result delCourse(int cid) {
         courseDao.deleteById(cid);
         courseUserDao.deleteById(cid);

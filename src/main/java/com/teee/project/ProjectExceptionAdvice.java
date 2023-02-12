@@ -3,6 +3,7 @@ package com.teee.project;
 
 import com.teee.vo.Result;
 import com.teee.vo.exception.BusinessException;
+import com.teee.vo.exception.SafeException;
 import com.teee.vo.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -29,7 +30,10 @@ public class ProjectExceptionAdvice {
     public Result doBusinessException(BusinessException exception){
         return new Result(exception.getCode(),null, exception.getMessage());
     }
-
+    @ExceptionHandler(SafeException.class)
+    public Result doSafeException(BusinessException exception){
+        return new Result(exception.getCode(),null, exception.getMessage());
+    }
 
     @ExceptionHandler(Exception.class)
     public Result doException(Exception exception){

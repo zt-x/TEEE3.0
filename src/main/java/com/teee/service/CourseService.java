@@ -13,6 +13,10 @@ import java.io.File;
  */
 public interface CourseService {
     Result getCourses(String token, int page);
+    /**
+     * 获取待批改的TODO列表
+     * */
+    Result getCoursesTodo(String token);
     Result getCourseInfo(int cid);
     Result createCourse(String token, Course course);
     Result delCourse(int cid);
