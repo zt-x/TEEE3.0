@@ -1,5 +1,7 @@
 package com.teee.domain.user;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -8,10 +10,15 @@ import lombok.Data;
 @Data
 public class UserInfo {
     @TableId
+    @ExcelProperty("学号")
     Long uid;
+    @ExcelIgnore
     Integer role;
+    @ExcelProperty("姓名")
     String uname;
+    @ExcelIgnore
     String avatar;
+    @ExcelIgnore
     Integer loginCount;
 
     public UserInfo(Long uid, Integer role, String username, String avatar) {
@@ -28,10 +35,8 @@ public class UserInfo {
 
     public UserInfo(Long uid, String avatar) {
         this.uid = uid;
-
         this.avatar = avatar;
     }
-
     public UserInfo(){
 
     }

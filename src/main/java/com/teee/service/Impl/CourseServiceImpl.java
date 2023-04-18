@@ -1,9 +1,11 @@
 package com.teee.service.Impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.teee.dao.*;
 import com.teee.domain.course.Course;
@@ -15,6 +17,7 @@ import com.teee.domain.work.WorkSubmit;
 import com.teee.domain.work.WorkSubmitContent;
 import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
+import com.teee.service.AccountService;
 import com.teee.service.CourseService;
 import com.teee.utils.*;
 import com.teee.vo.Result;
@@ -27,6 +30,7 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +56,9 @@ public class CourseServiceImpl implements CourseService {
     WorkSubmitDao workSubmitDao;
     @Autowired
     WorkSubmitContentDao workSubmitContentDao;
+    @Autowired
+    AccountService accountService;
+
 
     @Value("${path.file.files}")
     private String filePath;
@@ -73,7 +80,7 @@ public class CourseServiceImpl implements CourseService {
             course.setEndTime(null);
         }
         courseDao.insert(course);
-        courseUserDao.insert(new CourseUser(course.getCid(),""));
+        courseUserDao.insert(new CourseUser(course.getCid(),"[]"));
         return new Result(ProjectCode.CODE_SUCCESS, course.getCid(), "创建成功！课程ID为" + course.getCid());
     }
 
@@ -140,6 +147,43 @@ public class CourseServiceImpl implements CourseService {
         }catch (Exception e){
             throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "传入数据异常",e);
         }
+    }
+
+    @Override
+    public Result addUsers(JSONArray users, Integer cid) {
+        System.out.println(users);
+        System.out.println(cid);
+
+        int count=0;
+        for (int i=0; i<users.size(); i++) {
+            Object o = users.get(i);
+            try{
+                JSONObject user = (JSONObject) JSON.toJSON(o);
+                UserInfo userInfo = userInfoDao.selectById(user.getLong("uid"));
+                // 判断User是否已注册;
+                Long uid;
+                if(userInfo == null) {
+                    // 不存在则创建
+                    System.out.println(" -- 未注册");
+                    JSONObject newUser = new JSONObject();
+                    newUser.put("uid", user.getLong("uid"));
+                    newUser.put("uname", user.getString("uname"));
+                    newUser.put("pwd", "123456");
+                    newUser.put("role", 0);
+                    accountService.register(newUser);
+                    uid = newUser.getLong("uid");
+                }else {
+                    uid = userInfo.getUid();
+                }
+                // 加入
+                addStuToCourse(cid, uid);
+                addCourseToUser(uid, cid);
+                count++;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return new Result("成功添加了" + count + "个学生!");
     }
 
     private void addStuToCourse(int cid, Long uid) {

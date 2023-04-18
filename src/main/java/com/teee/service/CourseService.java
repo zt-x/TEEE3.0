@@ -1,11 +1,14 @@
 package com.teee.service;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teee.domain.course.Course;
+import com.teee.domain.user.UserInfo;
 import com.teee.vo.Result;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * @author Xu ZhengTao
@@ -21,6 +24,7 @@ public interface CourseService {
     Result createCourse(String token, Course course);
     Result delCourse(int cid);
     Result editCourse(Course course);
+    Result addUsers(JSONArray users, Integer cid);
 
     Result addCourse(String token, JSONObject jo);
     Result removeUserFromCourse(Long uid, JSONObject jo);

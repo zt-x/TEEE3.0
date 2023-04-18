@@ -5,9 +5,12 @@ import com.teee.domain.course.Course;
 import com.teee.project.Annoation.RoleCheck;
 import com.teee.project.ProjectRole;
 import com.teee.service.CourseService;
+import com.teee.utils.TypeChange;
 import com.teee.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 /**
  * @author Xu ZhengTao
@@ -27,7 +30,10 @@ public class TeacherCourseController {
     public Result createCourse(@RequestHeader("Authorization") String token, @RequestBody Course course){
         return courseService.createCourse(token, course);
     }
-
+    @PostMapping("/addUsers")
+    public Result addUser(@RequestBody JSONObject jo){
+        return courseService.addUsers(jo.getJSONArray("users"), jo.getInteger("cid"));
+    }
     @DeleteMapping
     public Result delCourse(@RequestBody JSONObject jo){
         return courseService.delCourse((Integer)jo.get("cid"));
