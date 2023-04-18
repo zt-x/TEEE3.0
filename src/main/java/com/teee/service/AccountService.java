@@ -9,6 +9,7 @@ import com.teee.vo.Result;
  * @version 3.0
  */
 public interface AccountService {
+    Result resetPassword(Long uid, JSONObject jo);
     Result register(JSONObject jo);
     Result login(JSONObject jo);
     Result updateUserInfo(JSONObject jo);

@@ -30,7 +30,7 @@ public class AutoReadOver {
     // TODO 0 异步执行， 后续可能考虑使用RabbitMQ
     @Async
     public void autoReadOver(WorkSubmit workSubmit, boolean readChoice, boolean readFillIn) {
-        log.info("进入AutoReadOver :" + readChoice + "|" + readFillIn);
+        // log.info("进入AutoReadOver :" + readChoice + "|" + readFillIn);
         WorkSubmit sw = workSubmit;
         Integer submitId = sw.getSid();
         WorkSubmitContent workSubmitContent = workSubmitContentDao.selectById(submitId);

@@ -2,6 +2,7 @@ package com.teee.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teee.controller.Account.AccountController;
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.Random;
 
@@ -12,6 +13,7 @@ public class MockData {
     public static Integer[] identities = {1,0};
 
 
+
     public static void addRandomUser(){
         AccountController bean = SpringBeanUtil.getBean(AccountController.class);
         for (int i = 0; i < 100; i++) {
@@ -19,6 +21,17 @@ public class MockData {
         }
 
     }
+    public static void addParticularUser(String uid, String uname, Integer role, String pwd){
+        AccountController bean = SpringBeanUtil.getBean(AccountController.class);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uid",uid);
+        jsonObject.put("uname",uname);
+        jsonObject.put("role",role);
+        jsonObject.put("pwd",pwd);
+        bean.register(jsonObject);
+
+    }
+
     public static JSONObject getRandomUser(float presentOfTeaAndStu){
         JSONObject user = new JSONObject();
         Random rd = new Random();
@@ -36,7 +49,7 @@ public class MockData {
                 ];
 
         user.put("role", role);
-        user.put("pwd", "123");
+        user.put("pwd", "123456");
         return user;
 
     }

@@ -5,6 +5,7 @@ import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.vo.exception.SystemException;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 import java.util.UUID;
@@ -20,8 +21,10 @@ import java.util.UUID;
  * */
 
 public class JWT {
+    // Token的有效期，单位为天
+    private static final int EXP = 15;
     private static final String SIGNATURE = "Xu ZhengTao";
-    private static final long TIME = 1000*60*60*24;
+    private static final long TIME = 1000*60*60*24 * EXP;
     
     public static String jwtEncryptTencentKey(String secretId, String secretKey){
         JwtBuilder jwtBuilder = Jwts.builder();

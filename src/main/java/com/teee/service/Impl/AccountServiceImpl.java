@@ -1,6 +1,7 @@
 package com.teee.service.Impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.teee.dao.UserInfoDao;
 import com.teee.dao.UserLoginDao;
 import com.teee.domain.user.UserInfo;
@@ -33,6 +34,20 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     UserInfoDao userInfoDao;
 
+    @Override
+    public Result resetPassword(Long uid, JSONObject jo) {
+        String pwd = jo.getString("pwd");
+        MyAssert.notNull(uid,"用户学号/ID异常");
+        MyAssert.notNull(pwd,"请输入合法的密码!");
+        pwd = DigestUtils.md5DigestAsHex(pwd.getBytes(StandardCharsets.UTF_8));
+        UserLogin userLogin = userLoginDao.selectById(uid);
+        userLogin.setPwd(pwd);
+        UserInfo userInfo = userInfoDao.selectById(uid);
+        MyAssert.isTrue(userLoginDao.updateById(userLogin)>0,"修改密码失败");
+        userInfo.setLoginCount(userInfo.getLoginCount()+1);
+        MyAssert.isTrue(userInfoDao.updateById(userInfo)>0,"修改密码失败");
+        return new Result("修改成功!");
+    }
 
     @Override
     public Result register(JSONObject jo) {
@@ -134,6 +149,7 @@ public class AccountServiceImpl implements AccountService {
         userData.put("role", userInfo.getRole());
         userData.put("routers", getRoutes(userInfo.getRole()).toString());
         userData.put("avatar", userInfo.getAvatar());
+        userData.put("loginCount", userInfo.getLoginCount());
         return new Result(ProjectCode.CODE_SUCCESS, userData, "Get Base Info OK");
     }
 

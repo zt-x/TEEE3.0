@@ -27,7 +27,6 @@ public class Tencent {
 
     /**
      * 人脸识别
-     *
      * */
     public Result faceCheck(String fileUrl1, String fileUrl2){
         // 实例化一个认证对象，入参需要传入腾讯云账户secretId，secretKey,此处还需注意密钥对的保密

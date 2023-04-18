@@ -229,6 +229,6 @@ public class WorkBankServiceImpl implements WorkBankService {
             ret.add(jo);
         }
         ret.sort((o1, o2) -> o2.getInteger("usageCount") - o1.getInteger("usageCount"));
-        return new Result(ret.subList(0,5));
+        return new Result(ret.subList(0,ret.size()>=5?5:ret.size()));
     }
 }

@@ -12,6 +12,7 @@ public class UserInfo {
     Integer role;
     String uname;
     String avatar;
+    Integer loginCount;
 
     public UserInfo(Long uid, Integer role, String username, String avatar) {
         this.uid = uid;

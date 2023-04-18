@@ -22,7 +22,11 @@ public class AccountController {
     public Result register(@RequestBody JSONObject jo){
         return accountService.register(jo);
     }
-
+    @PostMapping("/resetPassword")
+    @RoleCheck(role = ProjectRole.STUDENT)
+    public Result resetPassword(@RequestHeader("Authorization") String token, @RequestBody JSONObject jo){
+        return accountService.resetPassword(JWT.getUid(token), jo);
+    }
     @PostMapping("/login")
     public Result login(@RequestBody JSONObject jo){
         return accountService.login(jo);
