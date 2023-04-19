@@ -26,7 +26,6 @@ public class UtilTest {
     public void getSecrtKeyToken(){
         String si = "===AKIDjU6ZMxWiookaLzXjrsjPtAIG3hEbopWE===";
         String sk = "666_gHi5LQwKWbTAh3DD2YtAFAvY5RcdVBi3_666";
-        System.out.println(JWT.jwtEncryptTencentKey(si, sk));
     }
 
 
@@ -39,7 +38,6 @@ public class UtilTest {
             MyAssert.isTrue(mkdirs, "创建文件夹失败了 ... ");
         }
         String file = pathOfFile + System.currentTimeMillis() + ".xlsx";
-        System.out.println(file);
         new File(file).createNewFile();
 
         EasyExcel.write(file, UserInfo.class)

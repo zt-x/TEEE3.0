@@ -24,6 +24,8 @@ public class QuickStartController {
     Result getTodoList(@RequestHeader("Authorization") String token){
         if(JWT.isStudent(token)){
             //TODO student的TODO
+            return courseService.getCoursesTodo(token);
+
         }else if (JWT.isTeacher(token)){
             //TODO teacher的TODO
             return courseService.getCoursesTodo(token);

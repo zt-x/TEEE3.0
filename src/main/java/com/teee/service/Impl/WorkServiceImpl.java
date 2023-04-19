@@ -324,4 +324,10 @@ public class WorkServiceImpl implements WorkService {
             throw new BusinessException("获取作业统计时，发生了一些异常 ...", e);
         }
     }
+
+    @Override
+    public boolean isFinishWork(Long uid, Integer wid) {
+        WorkSubmit submitWork = workSubmitDao.selectOne(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, wid).eq(WorkSubmit::getUid, uid));
+        return submitWork==null?false:true;
+    }
 }

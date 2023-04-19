@@ -13,6 +13,5 @@ public class WorkTest {
 
    @Test
     public void getQue(){
-       System.out.println(workService.getQueContent(70, 4));
    }
 }

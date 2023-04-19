@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.teee.dao.*;
@@ -19,6 +20,7 @@ import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.service.AccountService;
 import com.teee.service.CourseService;
+import com.teee.service.WorkService;
 import com.teee.utils.*;
 import com.teee.vo.Result;
 import com.teee.vo.exception.BusinessException;
@@ -58,7 +60,8 @@ public class CourseServiceImpl implements CourseService {
     WorkSubmitContentDao workSubmitContentDao;
     @Autowired
     AccountService accountService;
-
+    @Autowired
+    WorkService workService;
 
     @Value("${path.file.files}")
     private String filePath;
@@ -86,32 +89,59 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Result getCoursesTodo(String token) {
-        /*返回值 [{cid,cname,count},{}]*/
-        JSONArray ret = new JSONArray();
-        Long tid = JWT.getUid(token);
-        List<Course> courses = courseDao.selectList(new LambdaQueryWrapper<Course>().eq(Course::getTid, tid));
-        MyAssert.notNullSafe(courses);
-        for (Course course : courses) {
-            System.out.println("正在寻找: " + course.getCname());
-            Integer cid = course.getCid();
-            List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
-            int count=0;
-            for (Work work : works) {
-                System.out.println("   - 正在寻找作业: " + work.getWname());
-                Integer workId  = work.getId();
-                count += workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, workId).eq(WorkSubmit::getFinishReadOver, 0));
+        if(JWT.isTeacher(token)){
+            /*返回值 [{cid,cname,count},{}]*/
+            JSONArray ret = new JSONArray();
+            Long tid = JWT.getUid(token);
+            List<Course> courses = courseDao.selectList(new LambdaQueryWrapper<Course>().eq(Course::getTid, tid));
+            MyAssert.notNullSafe(courses);
+            for (Course course : courses) {
+                Integer cid = course.getCid();
+                List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
+                int count=0;
+                for (Work work : works) {
+                    Integer workId  = work.getId();
+                    count += workSubmitDao.selectCount(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getWid, workId).eq(WorkSubmit::getFinishReadOver, 0));
+                }
+                if(count<=0){
+                    continue;
+                }
+                JSONObject cs = new JSONObject();
+                cs.put("cid",cid);
+                cs.put("avatar", userInfoDao.selectById(course.getTid()).getAvatar());
+                cs.put("cname",course.getCname());
+                cs.put("count", count);
+                ret.add(cs);
             }
-            if(count<=0){
-                continue;
+            return new Result(ret);
+        }else if(JWT.isStudent(token)){
+            /*返回值 [{cid,cname,workname,endTime},{}]*/
+            JSONArray ret = new JSONArray();
+            Long uid = JWT.getUid(token);
+            ArrayList<String> cids = TypeChange.str2arrl(userCourseDao.selectById(uid).getCid());
+            for(String cid: cids){
+                List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, Long.valueOf(cid)));
+                for (Work work : works) {
+                    if(work.getStatus()<0){
+                        continue;
+                    }
+                    // 判断写了没
+                    boolean finishWork = workService.isFinishWork(uid, work.getId());
+                    if(!finishWork){
+                        //没写则加入TODO中
+                        JSONObject jo = new JSONObject();
+                        jo.put("cid", cid);
+                        jo.put("cname", courseDao.selectById(cid).getCname());
+                        jo.put("wname", work.getWname());
+                        jo.put("endTime", work.getDeadline());
+                        ret.add(jo);
+                    }
+                }
             }
-            JSONObject cs = new JSONObject();
-            cs.put("cid",cid);
-            cs.put("avatar", userInfoDao.selectById(course.getTid()).getAvatar());
-            cs.put("cname",course.getCname());
-            cs.put("count", count);
-            ret.add(cs);
+            return new Result(ret);
         }
-        return new Result(ret);
+        return new Result(null);
+
     }
 
     @Override
@@ -151,8 +181,6 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Result addUsers(JSONArray users, Integer cid) {
-        System.out.println(users);
-        System.out.println(cid);
 
         int count=0;
         for (int i=0; i<users.size(); i++) {
@@ -164,7 +192,6 @@ public class CourseServiceImpl implements CourseService {
                 Long uid;
                 if(userInfo == null) {
                     // 不存在则创建
-                    System.out.println(" -- 未注册");
                     JSONObject newUser = new JSONObject();
                     newUser.put("uid", user.getLong("uid"));
                     newUser.put("uname", user.getString("uname"));
@@ -329,16 +356,16 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Result getCourses(String token, int page) {
+    public Result getCourses(String token, int page, String criteria) {
         // 分权限
         int role = JWT.getRole(token);
         if(role == ProjectRole.ADMIN.ordinal()){
             return new Result(ProjectCode.CODE_SUCCESS, "suc");
         }else if(role == ProjectRole.TEACHER.ordinal()){
             JSONArray courses = new JSONArray();
-            new JSONObject();
-            JSONObject courseJson = null;
-            IPage<Course> page1 = courseDao.selectPage(new Page(page, 9), new LambdaQueryWrapper<Course>().eq(Course::getTid, JWT.getUid(token)));
+            IPage<Course> page1 = courseDao.selectPage(new Page(page, 9), new LambdaQueryWrapper<Course>()
+                    .eq(Course::getTid, JWT.getUid(token))
+                    .like((criteria != null && !criteria.equals("")), Course::getCname, criteria));
             List<Course> coursesList = page1.getRecords();
             for (Course course : coursesList) {
                 packageCourse(courses, course);
@@ -351,8 +378,6 @@ public class CourseServiceImpl implements CourseService {
         }else if(role == ProjectRole.STUDENT.ordinal()){
             JSONArray courses = new JSONArray();
             Course course;
-            new JSONObject();
-            JSONObject courseJson = null;
             try{
                 UserCourse userCourse = userCourseDao.selectById(JWT.getUid(token));
                 if(userCourse == null || "".equals(userCourse.getCid()) || "[]".equals(userCourse.getCid())){
@@ -433,7 +458,7 @@ public class CourseServiceImpl implements CourseService {
         courseJson.put("cname", course.getCname());
         courseJson.put("cid", course.getCid());
         courseJson.put("tname", userInfoDao.selectById(course.getTid()).getUname());
-        courseJson.put("college", course.getCollege());
+        courseJson.put("classname", course.getClassname());
         courseJson.put("time", course.getStartTime() + " - " + course.getEndTime());
         courseJson.put("banner", course.getBanner());
         courseJson.put("status", course.getStatus());

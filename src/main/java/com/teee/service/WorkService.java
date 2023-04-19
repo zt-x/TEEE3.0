@@ -99,4 +99,12 @@ public interface WorkService {
     Result getWorkFinishStatus(String token, int cid);
 
     Result getAllWorkSummary(Integer cid);
+
+    /**
+     * 判断UID是否完成了WID的作业
+     * @param : {Long uid, Integer wid)}
+     * @return code=1/-1, msg=""
+     * TODO 3 批改作业
+     * */
+    boolean isFinishWork(Long uid, Integer wid);
 }

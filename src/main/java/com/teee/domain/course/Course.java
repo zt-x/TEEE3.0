@@ -14,7 +14,7 @@ public class Course {
     private Integer cid = -1;
     private String cname = "default name";
     private Long tid = -1L;
-    private String college = "";
+    private String classname= "";
     private String banner = "";
     private String works = "[]";
     private String exams = "[]";

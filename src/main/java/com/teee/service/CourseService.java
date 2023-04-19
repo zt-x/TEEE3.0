@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teee.domain.course.Course;
 import com.teee.domain.user.UserInfo;
 import com.teee.vo.Result;
+import org.springframework.lang.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
  * @version 3.0
  */
 public interface CourseService {
-    Result getCourses(String token, int page);
+    Result getCourses(String token, int page, String criteria);
     /**
      * 获取待批改的TODO列表
      * */

@@ -1,6 +1,7 @@
 package com.teee.service.Impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.teee.dao.UserInfoDao;
 import com.teee.dao.UserLoginDao;
@@ -60,6 +61,9 @@ public class AccountServiceImpl implements AccountService {
         MyAssert.notNull(uname,"请输入姓名!");
         MyAssert.notNull(role,"请选择用户的角色!");
         pwd = DigestUtils.md5DigestAsHex(pwd.getBytes(StandardCharsets.UTF_8));
+        if(userLoginDao.selectCount(new LambdaQueryWrapper<UserLogin>().eq(UserLogin::getUid,uid))>0){
+            return new Result("学号(工号)为 " + uid + " 的用户已经存在了!");
+        }
         MyAssert.isTrue(
                 userLoginDao.insert(new UserLogin(uid, pwd, role)) == 1
                             && userInfoDao.insert(new UserInfo(uid,uname,role)) == 1,

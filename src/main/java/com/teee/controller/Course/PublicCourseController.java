@@ -15,8 +15,8 @@ public class PublicCourseController {
     CourseService courseService;
 
     @GetMapping
-    public Result getMyCourses(@RequestHeader("Authorization") String token, @RequestParam("page") int page){
-        return courseService.getCourses(token, page);
+    public Result getMyCourses(@RequestHeader("Authorization") String token, @RequestParam("page") int page, @RequestParam(defaultValue = "",value = "criteria", required = false) String criteria){
+        return courseService.getCourses(token, page, criteria);
     }
     @GetMapping("/info")
     public Result getCourseInfo(@RequestParam("cid") int cid){

@@ -34,7 +34,6 @@ public class AutoReadOver {
         WorkSubmit sw = workSubmit;
         Integer submitId = sw.getSid();
         WorkSubmitContent workSubmitContent = workSubmitContentDao.selectById(submitId);
-        System.out.println(workSubmitContent);
         ArrayList<String> readOver;
         ArrayList<String> submitContent = TypeChange.str2arrl(workSubmitContent.getSubmitContent());
         String readover = workSubmitContent.getReadover();
