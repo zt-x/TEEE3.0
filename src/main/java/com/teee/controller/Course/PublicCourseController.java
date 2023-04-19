@@ -3,6 +3,7 @@ package com.teee.controller.Course;
 import com.teee.project.Annoation.RoleCheck;
 import com.teee.project.ProjectRole;
 import com.teee.service.CourseService;
+import com.teee.utils.JWT;
 import com.teee.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +47,10 @@ public class PublicCourseController {
     @GetMapping("/announcements")
     public Result getAnnouncements(@RequestParam("cid") int cid){
         return courseService.getAnnouncements(cid);
+    }
+
+    @GetMapping("/getFiveWorksAvg")
+    public Result getFiveWorksAvg(@RequestHeader("Authorization") String token, @RequestParam("cid") int cid){
+        return courseService.getFiveWorksAvg(JWT.getRole(token), cid);
     }
 }

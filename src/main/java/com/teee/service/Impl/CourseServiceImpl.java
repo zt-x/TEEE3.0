@@ -474,6 +474,42 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Result getLastExamStatistics(int cid) {
+        List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid).eq(Work::getIsExam, 1));
+        if(works.size()<=0) return null;
+        Work work = works.get(works.size()-1);
+        List<WorkSubmit> workSubmits = workSubmitDao.selectList(
+                new LambdaQueryWrapper<WorkSubmit>()
+                        .eq(WorkSubmit::getWid, work.getId())
+                        .eq(WorkSubmit::getFinishReadOver, 1)
+        );
+        int count_A=0, count_B=0, count_C=0, count_D=0;
+        for (WorkSubmit workSubmit : workSubmits) {
+            if(workSubmit.getScore()>=90){
+                count_A++;
+            }else if(workSubmit.getScore()>=75){
+                count_B++;
+            }else if(workSubmit.getScore()>=60){
+                count_C++;
+            }else {
+                count_D++;
+            }
+        }
+        JSONObject jo = new JSONObject();
+        jo.put("A", count_A);
+        jo.put("B", count_B);
+        jo.put("C", count_C);
+        jo.put("D", count_D);
+        return new Result(jo);
+    }
+
+    @Override
+    public Result getFiveWorksAvg(int role, int cid) {
+
+        return null;
+    }
+
+    @Override
     public File packageFile(int wid) {
         String tmpFilePath = tempPath+File.separator + "downloadZipTemp" + File.separator + wid;
         File tmpdir = new File(tmpFilePath);

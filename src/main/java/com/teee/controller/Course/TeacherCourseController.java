@@ -25,7 +25,10 @@ public class TeacherCourseController {
     CourseService courseService;
 
 
-
+    @GetMapping("/LEStatistic")
+    public Result createCourse(@RequestParam("cid") int cid){
+        return courseService.getLastExamStatistics(cid);
+    }
     @PostMapping
     public Result createCourse(@RequestHeader("Authorization") String token, @RequestBody Course course){
         return courseService.createCourse(token, course);
