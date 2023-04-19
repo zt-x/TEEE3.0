@@ -51,6 +51,6 @@ public class PublicCourseController {
 
     @GetMapping("/getFiveWorksAvg")
     public Result getFiveWorksAvg(@RequestHeader("Authorization") String token, @RequestParam("cid") int cid){
-        return courseService.getFiveWorksAvg(JWT.getRole(token), cid);
+        return courseService.getFiveWorksAvg(token, cid);
     }
 }

@@ -504,9 +504,50 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Result getFiveWorksAvg(int role, int cid) {
-
-        return null;
+    public Result getFiveWorksAvg(String token, int cid) {
+        int role = JWT.getRole(token);
+        Result result = new Result();
+        // [{wname:,score:}, ....]
+        //拿到最近五次作业
+        JSONArray jarr = new JSONArray();
+        List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
+        if(role == ProjectRole.TEACHER.ordinal()){
+            for(int i=works.size()-1,j=0; i>0 && j<5 ;i--,j++){
+                Work work = works.get(i);
+                List<WorkSubmit> workSubmits = workSubmitDao.selectList(new LambdaQueryWrapper<WorkSubmit>()
+                        .eq(WorkSubmit::getWid, work.getId())
+                        .eq(WorkSubmit::getFinishReadOver, 1)
+                );
+                int avg=0;
+                for (WorkSubmit workSubmit : workSubmits) {
+                    avg += workSubmit.getScore();
+                }
+                JSONObject jo = new JSONObject();
+                jo.put("wname", work.getWname());
+                jo.put("score", avg/(workSubmits.size()==0?1:workSubmits.size()));
+                jarr.add(jo);
+            }
+        }else if(role == ProjectRole.STUDENT.ordinal()){
+            Long uid = JWT.getUid(token);
+            for(int i=works.size()-1,j=0; i>0 && j<5 ;i--,j++){
+                Work work = works.get(i);
+                WorkSubmit workSubmit = workSubmitDao.selectOne(new LambdaQueryWrapper<WorkSubmit>()
+                        .eq(WorkSubmit::getUid, uid)
+                        .eq(WorkSubmit::getWid, work.getId())
+                        .eq(WorkSubmit::getFinishReadOver, 1)
+                );
+                JSONObject jo = new JSONObject();
+                jo.put("wname", work.getWname());
+                Float score=0f;
+                if(workSubmit!=null){
+                    score = workSubmit.getScore();
+                }
+                jo.put("score", score);
+                jarr.add(jo);
+            }
+        }
+        result.setData(jarr);
+        return result;
     }
 
     @Override

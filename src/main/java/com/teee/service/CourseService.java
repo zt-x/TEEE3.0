@@ -34,6 +34,6 @@ public interface CourseService {
     Result getAnnouncements(int cid);
     Result removeUserFromCourse(Long uid, JSONObject jo);
     Result getLastExamStatistics(int cid);
-    Result getFiveWorksAvg(int role, int cid);
+    Result getFiveWorksAvg(String token, int cid);
     File packageFile(int wid);
 }
