@@ -88,7 +88,8 @@ public class UploadController {
         String uploadFile = System.currentTimeMillis() + appendName;
         try {
             file.transferTo(new File(path+File.separator+uploadFile));
-            String url = request.getScheme() + "://" + request.getServerName() + ":" + port + "/" + dirName + "/" + uploadFile;
+            //String url = request.getScheme() + "://" + request.getServerName() + ":" + port + "/" + dirName + "/" + uploadFile;
+            String url = "/" + dirName + "/" + uploadFile;
             log.info(String.valueOf(new UploadResult(1, uploadFile,url)));
             return new UploadResult(1, uploadFile,url);
         } catch (IOException e) {

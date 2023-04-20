@@ -84,7 +84,7 @@ public class CourseServiceImpl implements CourseService {
         }
         courseDao.insert(course);
         courseUserDao.insert(new CourseUser(course.getCid(),"[]"));
-        return new Result(ProjectCode.CODE_SUCCESS, course.getCid(), "创建成功！课程ID为" + course.getCid());
+        return new Result(ProjectCode.CODE_SUCCESS, course.getCid(), "😃 创建成功！");
     }
 
     @Override
