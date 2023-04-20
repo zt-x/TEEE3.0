@@ -32,9 +32,9 @@ public class MockDataTest {
 ////            bean.resetPassword(jsonObject);
 //        }
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("uid",11);
-        jsonObject.put("pwd",11);
-        bean.resetPassword(11l,jsonObject);
+        jsonObject.put("uid",202031101554l);
+        jsonObject.put("pwd",123456);
+        bean.resetPassword(jsonObject.getLong("uid"),jsonObject);
 
     }
 

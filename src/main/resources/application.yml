@@ -1,6 +1,9 @@
+# Token的有效期在java.com.teee.utils.JWT类中的EXP字段设置，默认为15天
 server:
   port: 8080
 spring:
+  main:
+    allow-circular-references: true
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
@@ -18,6 +21,7 @@ path:
   pic:
     works: /usr/local/TEEE/testpic/
     faces: /usr/local/TEEE/testFace/
+    avatars: /usr/local/TEEE/testAvatar/
   file:
     files: /usr/local/TEEE/testfile/
     temps: /usr/local/TEEE/testTemp/

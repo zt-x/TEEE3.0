@@ -69,7 +69,7 @@ public class UploadController {
         suffixWhiteList.add(".tiff");
     }
 
-    private  UploadResult upload(MultipartFile file, HttpServletRequest request, String path, String dirName, boolean isPic){
+    public  UploadResult upload(MultipartFile file, HttpServletRequest request, String path, String dirName, boolean isPic){
         if(file == null){
             return new UploadResult(0, new UploadErr("未发现上传的文件"));
         }
@@ -89,6 +89,7 @@ public class UploadController {
         try {
             file.transferTo(new File(path+File.separator+uploadFile));
             String url = request.getScheme() + "://" + request.getServerName() + ":" + port + "/" + dirName + "/" + uploadFile;
+            log.info(String.valueOf(new UploadResult(1, uploadFile,url)));
             return new UploadResult(1, uploadFile,url);
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,7 +136,7 @@ public class UploadController {
     @RequestMapping("/works")
     @ResponseBody
     public UploadResult uploadWorkImg(@RequestParam("upload") MultipartFile file, HttpServletRequest request){
-        return upload(file, request, worksPicPath, "pic_works", true );
+        return upload(file, request, worksPicPath, "pic/works", true );
     }
     @RequestMapping("/faces")
     @ResponseBody

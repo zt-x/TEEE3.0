@@ -3,6 +3,7 @@ package com.teee.service.Impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
+import com.teee.controller.UploadController;
 import com.teee.dao.UserInfoDao;
 import com.teee.dao.UserLoginDao;
 import com.teee.domain.user.UserInfo;
@@ -14,11 +15,15 @@ import com.teee.utils.JWT;
 import com.teee.utils.MyAssert;
 import com.teee.utils.RouteFactory;
 import com.teee.vo.Result;
+import com.teee.vo.UploadResult;
 import com.teee.vo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -34,6 +39,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     UserInfoDao userInfoDao;
+
+    @Autowired
+    UploadController uploadController;
 
     @Override
     public Result resetPassword(Long uid, JSONObject jo) {
@@ -105,6 +113,25 @@ public class AccountServiceImpl implements AccountService {
         }
         return new Result(ProjectCode.CODE_SUCCESS, null, "编辑资料成功!");
     }
+    @Value("${path.pic.avatars}")
+    String aPath;
+    @Override
+    public Result updateUserAvatar(String token, MultipartFile file, HttpServletRequest request) {
+        // 得注入controller了 ..
+        UploadResult avatars_result = uploadController.upload(file, request, aPath, "pic/avatars", true);
+        if(avatars_result.getUploaded() == 1){
+            Long uid = JWT.getUid(token);
+            UserInfo u = userInfoDao.selectById(uid);
+            u.setAvatar(avatars_result.getUrl());
+            userInfoDao.updateById(u);
+        }
+        System.out.println(avatars_result);
+        Result result = new Result(
+                avatars_result.getUploaded()==1?1:ProjectCode.CODE_EXCEPTION_BUSSINESS
+                ,"上传" + (avatars_result.getUploaded()==1?"成功":("失败:" + avatars_result.getError().getMessage())));
+        return result;
+    }
+
     @Override
     public Result getUserInfo(Long uid) {
         return new Result(ProjectCode.CODE_SUCCESS,userInfoDao.selectById(uid),"查询成功");

@@ -122,6 +122,9 @@ public class CourseServiceImpl implements CourseService {
             for(String cid: cids){
                 List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, Long.valueOf(cid)));
                 for (Work work : works) {
+                    if(work == null){
+                        continue;
+                    }
                     if(work.getStatus()<0){
                         continue;
                     }
@@ -131,7 +134,11 @@ public class CourseServiceImpl implements CourseService {
                         //没写则加入TODO中
                         JSONObject jo = new JSONObject();
                         jo.put("cid", cid);
-                        jo.put("cname", courseDao.selectById(cid).getCname());
+                        try{
+                            jo.put("cname", courseDao.selectById(cid).getCname());
+                        }catch (NullPointerException e){
+                            continue;
+                        }
                         jo.put("wname", work.getWname());
                         jo.put("endTime", work.getDeadline());
                         ret.add(jo);
@@ -512,7 +519,7 @@ public class CourseServiceImpl implements CourseService {
         JSONArray jarr = new JSONArray();
         List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
         if(role == ProjectRole.TEACHER.ordinal()){
-            for(int i=works.size()-1,j=0; i>0 && j<5 ;i--,j++){
+            for(int i=works.size()-1,j=0; i>=0 && j<5 ;i--,j++){
                 Work work = works.get(i);
                 List<WorkSubmit> workSubmits = workSubmitDao.selectList(new LambdaQueryWrapper<WorkSubmit>()
                         .eq(WorkSubmit::getWid, work.getId())
@@ -529,7 +536,7 @@ public class CourseServiceImpl implements CourseService {
             }
         }else if(role == ProjectRole.STUDENT.ordinal()){
             Long uid = JWT.getUid(token);
-            for(int i=works.size()-1,j=0; i>0 && j<5 ;i--,j++){
+            for(int i=works.size()-1,j=0; i>=0 && j<5 ;i--,j++){
                 Work work = works.get(i);
                 WorkSubmit workSubmit = workSubmitDao.selectOne(new LambdaQueryWrapper<WorkSubmit>()
                         .eq(WorkSubmit::getUid, uid)

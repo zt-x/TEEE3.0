@@ -22,7 +22,8 @@ public class SpringMvcSupport implements WebMvcConfigurer {
 
     @Value("${path.pic.faces}")
     private String facesPicPath;
-
+    @Value("${path.pic.avatars}")
+    private String avatarsPicPath;
     @Value("${path.file.files}")
     private String filePath;
 
@@ -38,6 +39,7 @@ public class SpringMvcSupport implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         registry.addResourceHandler("/pic/works/**").addResourceLocations("file:" + worksPicPath);
         registry.addResourceHandler("/pic/faces/**").addResourceLocations("file:" + facesPicPath);
+        registry.addResourceHandler("/pic/avatars/**").addResourceLocations("file:" + avatarsPicPath);
         registry.addResourceHandler("/file/files/**").addResourceLocations("file:" + filePath);
         registry.addResourceHandler("/file/temps/**").addResourceLocations("file:" + tempsPath);
     }

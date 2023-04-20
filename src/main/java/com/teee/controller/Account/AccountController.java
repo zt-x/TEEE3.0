@@ -8,6 +8,9 @@ import com.teee.utils.JWT;
 import com.teee.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/accounts")
@@ -53,7 +56,12 @@ public class AccountController {
     public Result updateUserInfo(@RequestBody JSONObject jo){
         return accountService.updateUserInfo(jo);
     }
-
+    @PostMapping("/updateAvatar")
+    @RoleCheck(role = ProjectRole.STUDENT)
+    /** jo:{uid, avatar} */
+    public Result updateUserAvatar(@RequestHeader("Authorization") String token, @RequestParam("file") MultipartFile file, HttpServletRequest request){
+        return accountService.updateUserAvatar(token, file, request);
+    }
     @DeleteMapping
     @RoleCheck(role = ProjectRole.TEACHER)
     /** jo:{uid: uid} */
