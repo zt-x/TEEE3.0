@@ -122,7 +122,7 @@ public class AccountServiceImpl implements AccountService {
         if(avatars_result.getUploaded() == 1){
             Long uid = JWT.getUid(token);
             UserInfo u = userInfoDao.selectById(uid);
-            u.setAvatar("resources" + avatars_result.getUrl());
+            u.setAvatar(avatars_result.getUrl());
             userInfoDao.updateById(u);
         }
         System.out.println(avatars_result);
