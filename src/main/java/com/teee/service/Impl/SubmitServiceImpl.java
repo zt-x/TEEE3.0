@@ -175,4 +175,10 @@ public class SubmitServiceImpl implements SubmitService {
             throw new BusinessException(ProjectCode.CODE_EXCEPTION, "获取作业的提交记录时发生错误", e);
         }
     }
+
+    @Override
+    public Result rejectSubmit(Integer sid) {
+        int i = workSubmitDao.deleteById(sid);
+        return new Result("操作成功!");
+    }
 }

@@ -19,7 +19,7 @@ public class MockDataTest {
 
     @Test
     void addParticularUser(){
-        MockData.addParticularUser("11","tea11", 1,"11");
+        MockData.addParticularUser("0","管理员", 2,"Admin@123456!");
     }
 
     @Test
@@ -32,8 +32,8 @@ public class MockDataTest {
 ////            bean.resetPassword(jsonObject);
 //        }
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("uid",202031101554l);
-        jsonObject.put("pwd",123456);
+        jsonObject.put("uid",1l);
+        jsonObject.put("pwd",1);
         bean.resetPassword(jsonObject.getLong("uid"),jsonObject);
 
     }

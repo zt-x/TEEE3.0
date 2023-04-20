@@ -8,6 +8,7 @@ public interface SubmitService {
     Result getSubmitSummary(int wid);
     Result getSubmitContentBySid(int sid);
     Result getSubmitByWorkId(String token, int wid);
+    Result rejectSubmit(Integer sid);
 }
 
 
