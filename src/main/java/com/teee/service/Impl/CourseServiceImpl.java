@@ -281,6 +281,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Result getUsers(int cid) {
         List<Work> works = workDao.selectList(new LambdaQueryWrapper<Work>().eq(Work::getCid, cid));
+        int lastExamId = -1;
+        for (Work work : works) {
+            if(work.getIsExam() == 1){
+                lastExamId = work.getId();
+            }
+        }
         List<Integer> wids = new ArrayList<>();
         for (Work work : works) {
             wids.add(work.getId());
@@ -302,13 +308,23 @@ public class CourseServiceImpl implements CourseService {
                 List<WorkSubmit> workSubmits = workSubmitDao.selectList(new LambdaQueryWrapper<WorkSubmit>().eq(WorkSubmit::getUid, userInfo.getUid()));
                 float avarage = 0;
                 int fwn = 0;
+                float lastExamScore=-1;
                 for (WorkSubmit workSubmit : workSubmits) {
                     if(wids.contains(workSubmit.getWid())){
                         avarage += workSubmit.getScore();
                         fwn++;
+                        if(workSubmit.getWid() == lastExamId){
+                            lastExamScore = workSubmit.getScore();
+                        }
                     }
                 }
+
                 avarage = avarage/ (workSubmits.size() == 0?1:workSubmits.size());
+                if(lastExamId == -1 || lastExamScore == -1){
+                    ret.put("lastExamScore","未参加");
+                }else{
+                    ret.put("lastExamScore", lastExamScore);
+                }
                 ret.put("workAverageScore", avarage);
                 ret.put("finishWorkNum", fwn);
                 jarr.add(ret);
