@@ -5,12 +5,12 @@ import com.teee.domain.course.Course;
 import com.teee.project.Annoation.RoleCheck;
 import com.teee.project.ProjectRole;
 import com.teee.service.CourseService;
-import com.teee.utils.TypeChange;
 import com.teee.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author Xu ZhengTao
@@ -54,5 +54,10 @@ public class TeacherCourseController {
         return courseService.editCourse(course);
     }
 
-
+    @GetMapping("/downloadExportUser")
+    public void downloadUserInfo(@RequestParam("cid") Integer cid, HttpServletResponse response) throws UnsupportedEncodingException {
+        System.out.println("0");
+        courseService.downloadUserInfo(cid, response);
+        //return
+    }
 }

@@ -1,16 +1,16 @@
 package com.teee.service.Impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.teee.dao.*;
 import com.teee.domain.course.Course;
 import com.teee.domain.course.CourseUser;
+import com.teee.domain.course.CourseUserInfo;
 import com.teee.domain.course.UserCourse;
 import com.teee.domain.user.UserInfo;
 import com.teee.domain.work.Work;
@@ -20,6 +20,7 @@ import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.service.AccountService;
 import com.teee.service.CourseService;
+import com.teee.service.FileLoadService;
 import com.teee.service.WorkService;
 import com.teee.utils.*;
 import com.teee.vo.Result;
@@ -30,9 +31,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +64,9 @@ public class CourseServiceImpl implements CourseService {
     AccountService accountService;
     @Autowired
     WorkService workService;
+
+    @Autowired
+    FileLoadService fileLoadService;
 
     @Value("${path.file.files}")
     private String filePath;
@@ -571,6 +576,47 @@ public class CourseServiceImpl implements CourseService {
         }
         result.setData(jarr);
         return result;
+    }
+
+    @Override
+    public Result downloadUserInfo(int cid, HttpServletResponse resp) throws UnsupportedEncodingException {
+        Result users = getUsers(cid);
+        Object data = users.getData();
+        Course course = courseDao.selectById(cid);
+        if(data!=null){
+            String data_str = data.toString();
+            JSONArray userArray = TypeChange.str2Jarr(data_str);
+            List<CourseUserInfo> courseUserInfos = new ArrayList<>();
+            for (Object o : userArray) {
+                JSONObject jo = (JSONObject) o;
+                CourseUserInfo courseUserInfo = new CourseUserInfo();
+                courseUserInfo.setUid(jo.getLong("uid"));
+                courseUserInfo.setUname(jo.getString("username"));
+                courseUserInfo.setCount(jo.getInteger("finishWorkNum"));
+                courseUserInfo.setAvg(jo.getFloat("workAverageScore"));
+                courseUserInfo.setLastExamScore(jo.getString("lastExamScore"));
+                courseUserInfos.add(courseUserInfo);
+            }
+            File TempFile = new File(tempPath);
+            if(!TempFile.exists()){
+                boolean mkdirs = TempFile.mkdirs();
+                MyAssert.isTrue(mkdirs, "创建文件夹失败了 ... ");
+            }
+            String userListExcel = "TimeStamp_" +  System.currentTimeMillis() + "_" + course.getCname() + course.getClassname()  +"成员统计信息.xlsx";
+            File excelFile = new File(TempFile,userListExcel);
+            if (!excelFile.exists()) {
+                try {
+                    excelFile.createNewFile();//创建一个新的文件
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            EasyExcel.write(excelFile, CourseUserInfo.class).sheet(course.getClassname()).doWrite(courseUserInfos);
+            fileLoadService.downloadFile(userListExcel,ProjectCode.FILETYPE_TEMP,resp);
+        }else{
+            return new Result(ProjectCode.CODE_EXCEPTION,"用户列表为空");
+        }
+        return null;
     }
 
     @Override

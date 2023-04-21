@@ -1,9 +1,7 @@
 package com.teee;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teee.controller.Account.AccountController;
 import com.teee.service.AccountService;
-import com.teee.service.Impl.AccountServiceImpl;
 import com.teee.utils.MockData;
 import com.teee.utils.SpringBeanUtil;
 import org.junit.jupiter.api.Test;

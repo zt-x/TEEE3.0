@@ -1,6 +1,7 @@
 package com.teee.controller;
 
 import com.teee.project.ProjectCode;
+import com.teee.service.FileLoadService;
 import com.teee.utils.MyAssert;
 import com.teee.utils.TypeChange;
 import com.teee.vo.Result;
@@ -8,9 +9,9 @@ import com.teee.vo.UploadErr;
 import com.teee.vo.UploadResult;
 import com.teee.vo.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,9 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -48,6 +47,9 @@ public class FIleLoadController {
 
     @Value("${server.port}")
     private String port;
+
+    @Autowired
+    FileLoadService fileLoadService;
 
 
     ArrayList<String> suffixWhiteList;
@@ -157,39 +159,7 @@ public class FIleLoadController {
     @RequestMapping("/getFile")
     @ResponseBody
     public Result downloadFile(@RequestParam("fileName") String fileName, @RequestParam("fileType") Integer fileType, HttpServletResponse response) throws UnsupportedEncodingException {
-        String path = "";
-        if(fileType == ProjectCode.FILETYPE_TEMP){
-            //临时文件
-            path = tempsPath;
-        }else if(fileType == ProjectCode.FILETYPE_POTENCY){
-            path = filePath;
-        }else {
-            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "未找到您要的文件😖, 可能请求参数出了问题");
-        }
-
-        File file = new File(path + File.separator + fileName);
-
-        String substring = fileName.substring(fileName.lastIndexOf("_")+1);
-        String fileOriginName = substring.substring(substring.lastIndexOf("_")+1);
-        if(!file.exists()){
-            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "未找到您要的文件😖");
-        }
-        response.reset();
-        response.setContentType("application/octet-stream");
-        response.setCharacterEncoding("utf-8");
-        response.setContentLength((int)file.length());
-        response.setHeader("Content-Disposition", URLEncoder.encode(fileOriginName, "UTF-8"));
-        long startTime = System.currentTimeMillis();
-        try {
-            byte[] bytes = FileCopyUtils.copyToByteArray(file);
-            OutputStream os = response.getOutputStream();
-            os.write(bytes);
-            os.close();
-        } catch (IOException e) {
-            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "启动下载失败了😫");
-        }
-
-        return null;
+        return fileLoadService.downloadFile(fileName,fileType,response);
     }
 
 }

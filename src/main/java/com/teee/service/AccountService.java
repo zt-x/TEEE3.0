@@ -2,7 +2,6 @@ package com.teee.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teee.vo.Result;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;

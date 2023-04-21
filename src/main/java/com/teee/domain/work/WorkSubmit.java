@@ -2,7 +2,10 @@ package com.teee.domain.work;
 
 
 import com.alibaba.fastjson.JSONArray;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.teee.dao.BankWorkDao;
 import com.teee.dao.WorkDao;
 import com.teee.domain.bank.BankWork;

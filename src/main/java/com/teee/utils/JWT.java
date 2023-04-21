@@ -5,7 +5,6 @@ import com.teee.project.ProjectCode;
 import com.teee.project.ProjectRole;
 import com.teee.vo.exception.SystemException;
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 import java.util.UUID;

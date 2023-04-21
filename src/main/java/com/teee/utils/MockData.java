@@ -2,7 +2,6 @@ package com.teee.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teee.controller.Account.AccountController;
-import org.jetbrains.annotations.TestOnly;
 
 import java.util.Random;
 

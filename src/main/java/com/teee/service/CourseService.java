@@ -4,12 +4,11 @@ package com.teee.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teee.domain.course.Course;
-import com.teee.domain.user.UserInfo;
 import com.teee.vo.Result;
-import org.springframework.lang.Nullable;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.ArrayList;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author Xu ZhengTao
@@ -35,5 +34,6 @@ public interface CourseService {
     Result removeUserFromCourse(Long uid, JSONObject jo);
     Result getLastExamStatistics(int cid);
     Result getFiveWorksAvg(String token, int cid);
+    Result downloadUserInfo(int cid, HttpServletResponse resp) throws UnsupportedEncodingException;
     File packageFile(int wid);
 }
