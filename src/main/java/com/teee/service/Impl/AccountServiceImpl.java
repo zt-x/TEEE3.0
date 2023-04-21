@@ -2,8 +2,7 @@ package com.teee.service.Impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.teee.controller.UploadController;
+import com.teee.controller.FIleLoadController;
 import com.teee.dao.UserInfoDao;
 import com.teee.dao.UserLoginDao;
 import com.teee.domain.user.UserInfo;
@@ -41,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
     UserInfoDao userInfoDao;
 
     @Autowired
-    UploadController uploadController;
+    FIleLoadController FIleLoadController;
 
     @Override
     public Result resetPassword(Long uid, JSONObject jo) {
@@ -118,7 +117,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Result updateUserAvatar(String token, MultipartFile file, HttpServletRequest request) {
         // 得注入controller了 ..
-        UploadResult avatars_result = uploadController.upload(file, request, aPath, "pic/avatars", true);
+        UploadResult avatars_result = FIleLoadController.upload(file, request, aPath, "pic/avatars", true);
         if(avatars_result.getUploaded() == 1){
             Long uid = JWT.getUid(token);
             UserInfo u = userInfoDao.selectById(uid);

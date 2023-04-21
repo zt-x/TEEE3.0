@@ -33,7 +33,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/upload")
 @Slf4j
-public class UploadController {
+public class FIleLoadController {
     @Value("${path.pic.works}")
     private String worksPicPath;
 
@@ -52,7 +52,7 @@ public class UploadController {
 
     ArrayList<String> suffixWhiteList;
 
-    public UploadController() {
+    public FIleLoadController() {
         suffixWhiteList= new ArrayList<>();
         suffixWhiteList.add(".png");
         suffixWhiteList.add(".jpg");
@@ -156,8 +156,19 @@ public class UploadController {
     }
     @RequestMapping("/getFile")
     @ResponseBody
-    public Result downloadFile(@RequestParam("fileName") String fileName, HttpServletResponse response) throws UnsupportedEncodingException {
-        File file = new File(filePath + File.separator + fileName);
+    public Result downloadFile(@RequestParam("fileName") String fileName, @RequestParam("fileType") Integer fileType, HttpServletResponse response) throws UnsupportedEncodingException {
+        String path = "";
+        if(fileType == ProjectCode.FILETYPE_TEMP){
+            //临时文件
+            path = tempsPath;
+        }else if(fileType == ProjectCode.FILETYPE_POTENCY){
+            path = filePath;
+        }else {
+            throw new BusinessException(ProjectCode.CODE_EXCEPTION_BUSSINESS, "未找到您要的文件😖, 可能请求参数出了问题");
+        }
+
+        File file = new File(path + File.separator + fileName);
+
         String substring = fileName.substring(fileName.lastIndexOf("_")+1);
         String fileOriginName = substring.substring(substring.lastIndexOf("_")+1);
         if(!file.exists()){

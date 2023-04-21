@@ -30,4 +30,9 @@ public class ProjectCode {
     public static final Integer KEY_IMPORT_WORKBANK = 1;
     public static final Integer KEY_SIGN_IN = 2;
 
+    //FileType
+    public static final Integer FILETYPE_TEMP = 0;
+    public static final Integer FILETYPE_POTENCY = 1;
+
+
 }
